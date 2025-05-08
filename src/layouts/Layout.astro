@@ -1,0 +1,57 @@
+---
+import '../styles/global.css';
+import '../i18n/config';
+import Footer from '../components/layout/Footer.jsx';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body class="min-h-screen bg-gray-50">
+		<div class="flex flex-col min-h-screen">
+			<slot />
+
+			<Footer client:load />
+		</div>
+	</body>
+</html>
+
+<style is:global>
+	@keyframes fade-in {
+		from { opacity: 0; }
+	}
+
+	@keyframes fade-out {
+		to { opacity: 0; }
+	}
+
+	@keyframes slide-from-right {
+		from { transform: translateX(30px); }
+	}
+
+	@keyframes slide-to-left {
+		to { transform: translateX(-30px); }
+	}
+
+	::view-transition-old(root) {
+		animation: 90ms cubic-bezier(0.4, 0, 0.2, 1) both fade-out,
+			300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
+	}
+
+	::view-transition-new(root) {
+		animation: 210ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
+			300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
+	}
+</style>

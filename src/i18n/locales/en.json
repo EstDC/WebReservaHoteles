@@ -1,0 +1,82 @@
+{
+  "common": {
+    "search": "Search",
+    "loading": "Loading...",
+    "notFound": "Not found",
+    "bookNow": "Book now",
+    "perNight": "per night",
+    "selectLanguage": "Select language",
+    "selectCurrency": "Select currency",
+    "filters": "Filters",
+    "apply": "Apply",
+    "reset": "Reset",
+    "showMore": "Show more",
+    "showLess": "Show less"
+  },
+  "hotels": {
+    "title": "Available Hotels",
+    "error": "Error loading hotels",
+    "noHotels": "No hotels found",
+    "price": "{{price}} per night",
+    "viewDetails": "View Details"
+  },
+  "filters": {
+    "title": "Filter Hotels",
+    "location": "Location",
+    "locationPlaceholder": "Enter city or area",
+    "priceRange": "Price Range",
+    "minPrice": "Min Price",
+    "maxPrice": "Max Price",
+    "rating": "Rating",
+    "selectRating": "Select Rating",
+    "amenities": "Amenities",
+    "amenities": {
+      "wifi": "WiFi",
+      "pool": "Pool",
+      "parking": "Parking",
+      "restaurant": "Restaurant",
+      "gym": "Gym"
+    },
+    "apply": "Apply Filters",
+    "reset": "Reset Filters"
+  },
+  "hotel": {
+    "searchPlaceholder": "Search hotels...",
+    "amenities": "Amenities",
+    "description": "Description",
+    "location": "Location",
+    "price": "Price",
+    "rating": "Rating",
+    "rooms": "Rooms",
+    "noHotels": "No hotels found",
+    "services": {
+      "wifi": "WiFi",
+      "pool": "Pool",
+      "parking": "Parking",
+      "spa": "Spa",
+      "gym": "Gym",
+      "restaurant": "Restaurant",
+      "bar": "Bar",
+      "roomService": "Room service"
+    }
+  },
+  "room": {
+    "type": "Type",
+    "capacity": "Capacity",
+    "available": "Available",
+    "price": "Price",
+    "description": "Description",
+    "images": "Images"
+  },
+  "booking": {
+    "checkIn": "Check-in date",
+    "checkOut": "Check-out date",
+    "guests": "Guests",
+    "totalPrice": "Total price",
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled"
+    }
+  }
+} 

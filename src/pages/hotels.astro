@@ -1,0 +1,33 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/layout/Header.jsx';
+import HotelList from '../components/hotel/HotelList.jsx';
+import HotelFilters from '../components/hotel/HotelFilters.jsx';
+---
+
+<Layout title="Hoteles - HotelFinder">
+  <Header client:load />
+  <main class="container mx-auto px-4 py-8">
+    <div class="max-w-7xl mx-auto">
+      <h1 class="text-3xl font-bold mb-8">Hoteles Disponibles</h1>
+      
+      <div class="flex flex-col lg:flex-row gap-6">
+        {/* Sidebar con filtros */}
+        <div class="w-full lg:w-64">
+          <HotelFilters client:only="react" />
+        </div>
+
+        {/* Lista de hoteles */}
+        <div class="flex-1">
+          <HotelList client:only="react" />
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  :global(body) {
+    font-family: 'Montserrat', sans-serif;
+  }
+</style> 

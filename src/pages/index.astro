@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/layout/Header.jsx';
+import Hero from '../components/sections/Hero.jsx';
+import AboutSection from '../components/sections/AboutSection.jsx';
+import VideoSection from '../components/sections/VideoSection.jsx';
+import CitiesCarousel from '../components/sections/CitiesCarousel.jsx';
+import FacilitiesSection from '../components/sections/FacilitiesSection.jsx';
+import FeatureSection from '../components/sections/FeatureSection.jsx';
+
+// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
+// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+---
+
+<Layout title="HotelFinder - Tu destino de lujo">
+	<Header client:load />
+	<main>
+		<Hero client:load />
+		<AboutSection client:load />
+		<VideoSection client:load />
+		<CitiesCarousel client:load />
+		<FacilitiesSection client:load />
+
+		<FeatureSection
+			client:load
+			image="/images/img/manchester-st-peters-square-main-gallery-16.webp"
+			subtitle="Descubre"
+			title="Hoteles"
+			text="Explora nuestra selección de hoteles de lujo en las mejores ubicaciones. Encuentra el alojamiento perfecto para tu próxima aventura."
+			buttonText="Ver hoteles"
+			buttonLink="/hotels"
+			imageLeft={true}
+		/>
+
+		<FeatureSection
+			client:load
+			image="/images/img/portugal2.jpg"
+			subtitle="Experiencias"
+			title="Destinos"
+			text="Descubre los destinos más populares y encuentra el hotel perfecto para tu próxima escapada. Desde playas paradisíacas hasta ciudades vibrantes."
+			buttonText="Explorar destinos"
+			buttonLink="/hotels"
+			imageLeft={false}
+		/>
+	</main>
+</Layout>
+
+<style>
+	:global(body) {
+		font-family: 'Montserrat', sans-serif;
+	}
+</style>

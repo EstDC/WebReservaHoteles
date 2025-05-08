@@ -1,0 +1,21 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/layout/Header.jsx';
+import UserProfile from '../../../components/user/UserProfile.jsx';
+---
+
+<Layout title="Mi Perfil - HotelFinder">
+  <Header client:load />
+  <main class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl font-bold mb-8">Mi Perfil</h1>
+      <UserProfile client:load />
+    </div>
+  </main>
+</Layout>
+
+<style>
+  :global(body) {
+    font-family: 'Montserrat', sans-serif;
+  }
+</style> 

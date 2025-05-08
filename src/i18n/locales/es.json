@@ -1,0 +1,82 @@
+{
+  "common": {
+    "search": "Buscar",
+    "loading": "Cargando...",
+    "notFound": "No encontrado",
+    "bookNow": "Reservar ahora",
+    "perNight": "por noche",
+    "selectLanguage": "Seleccionar idioma",
+    "selectCurrency": "Seleccionar moneda",
+    "filters": "Filtros",
+    "apply": "Aplicar",
+    "reset": "Restablecer",
+    "showMore": "Mostrar más",
+    "showLess": "Mostrar menos"
+  },
+  "hotels": {
+    "title": "Hoteles Disponibles",
+    "error": "Error al cargar los hoteles",
+    "noHotels": "No se encontraron hoteles",
+    "price": "{{price}} por noche",
+    "viewDetails": "Ver Detalles"
+  },
+  "filters": {
+    "title": "Filtrar Hoteles",
+    "location": "Ubicación",
+    "locationPlaceholder": "Ingrese ciudad o área",
+    "priceRange": "Rango de Precio",
+    "minPrice": "Precio Mínimo",
+    "maxPrice": "Precio Máximo",
+    "rating": "Calificación",
+    "selectRating": "Seleccionar Calificación",
+    "amenities": "Servicios",
+    "amenities": {
+      "wifi": "WiFi",
+      "pool": "Piscina",
+      "parking": "Estacionamiento",
+      "restaurant": "Restaurante",
+      "gym": "Gimnasio"
+    },
+    "apply": "Aplicar Filtros",
+    "reset": "Restablecer Filtros"
+  },
+  "hotel": {
+    "searchPlaceholder": "Buscar hoteles...",
+    "amenities": "Servicios",
+    "description": "Descripción",
+    "location": "Ubicación",
+    "price": "Precio",
+    "rating": "Calificación",
+    "rooms": "Habitaciones",
+    "noHotels": "No se encontraron hoteles",
+    "services": {
+      "wifi": "WiFi",
+      "pool": "Piscina",
+      "parking": "Estacionamiento",
+      "spa": "Spa",
+      "gym": "Gimnasio",
+      "restaurant": "Restaurante",
+      "bar": "Bar",
+      "roomService": "Servicio a la habitación"
+    }
+  },
+  "room": {
+    "type": "Tipo",
+    "capacity": "Capacidad",
+    "available": "Disponible",
+    "price": "Precio",
+    "description": "Descripción",
+    "images": "Imágenes"
+  },
+  "booking": {
+    "checkIn": "Fecha de entrada",
+    "checkOut": "Fecha de salida",
+    "guests": "Huéspedes",
+    "totalPrice": "Precio total",
+    "status": {
+      "pending": "Pendiente",
+      "confirmed": "Confirmado",
+      "cancelled": "Cancelado"
+    }
+  }
+} 

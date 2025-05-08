@@ -1,0 +1,25 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/layout/Header.jsx';
+import LoginForm from '../../components/auth/LoginForm.jsx';
+---
+
+<Layout title="Iniciar Sesión - HotelFinder">
+  <Header client:load />
+  <main class="container mx-auto px-4 py-8">
+    <div class="max-w-md mx-auto">
+      <h1 class="text-3xl font-bold mb-8 text-center">Iniciar Sesión</h1>
+      <LoginForm client:load />
+      <p class="mt-4 text-center text-gray-600">
+        ¿No tienes una cuenta? 
+        <a href="/auth/register" class="text-primary hover:underline">Regístrate aquí</a>
+      </p>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  :global(body) {
+    font-family: 'Montserrat', sans-serif;
+  }
+</style> 

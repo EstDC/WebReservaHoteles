@@ -1,0 +1,76 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Sistema de reserva de hoteles" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen bg-gray-50">
+    <header id="main-header" class="fixed top-0 left-0 w-full z-50 transition-colors duration-500 bg-transparent text-white">
+      <nav class="container mx-auto px-4 py-4">
+        <div class="flex justify-between items-center">
+          <a href="/" class="text-2xl font-bold">HotelReservas</a>
+          <div class="flex gap-4">
+            <a href="/" class="hover:text-yellow-300 transition-colors">Inicio</a>
+            <a href="/hoteles" class="hover:text-yellow-300 transition-colors">Hoteles</a>
+            <a href="/reservas" class="hover:text-yellow-300 transition-colors">Mis Reservas</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <slot />
+
+    <footer class="bg-gray-800 text-white mt-8">
+      <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h3 class="text-lg font-semibold mb-4">HotelReservas</h3>
+            <p class="text-gray-400">Tu plataforma de confianza para reservar hoteles</p>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Enlaces Rápidos</h3>
+            <ul class="space-y-2">
+              <li><a href="/" class="text-gray-400 hover:text-white">Inicio</a></li>
+              <li><a href="/hoteles" class="text-gray-400 hover:text-white">Hoteles</a></li>
+              <li><a href="/contacto" class="text-gray-400 hover:text-white">Contacto</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Contacto</h3>
+            <p class="text-gray-400">Email: info@hotelreservas.com</p>
+            <p class="text-gray-400">Teléfono: +34 123 456 789</p>
+          </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+          <p>&copy; 2024 HotelReservas. Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Cambia el color del header al hacer scroll
+      window.addEventListener('scroll', () => {
+        const header = document.getElementById('main-header');
+        if (window.scrollY > 60) {
+          header.classList.add('bg-black', 'text-white', 'shadow-lg');
+          header.classList.remove('bg-transparent');
+        } else {
+          header.classList.remove('bg-black', 'text-white', 'shadow-lg');
+          header.classList.add('bg-transparent');
+        }
+      });
+    </script>
+  </body>
+</html> 
