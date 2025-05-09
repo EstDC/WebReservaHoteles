@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-white text-gray-900;
   }
 }
 
@@ -30,4 +30,11 @@
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
+}
+
+body, #__astro, #app, main {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100vw !important;
+  box-sizing: border-box;
 }
