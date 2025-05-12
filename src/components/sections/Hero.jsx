@@ -1,10 +1,33 @@
 import { useState } from 'react';
+import { useHotelStore } from '../../stores/hotelStore';
 
 const Hero = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const user = useHotelStore.getState().user;
+    if (!user) {
+      const searchParams = new URLSearchParams({
+        startDate,
+        endDate,
+        adults,
+        children
+      });
+      window.location.href = `/auth/login?redirect=/search?${searchParams.toString()}`;
+    } else {
+      const searchParams = new URLSearchParams({
+        startDate,
+        endDate,
+        adults,
+        children
+      });
+      window.location.href = `/search?${searchParams.toString()}`;
+    }
+  };
 
   return (
     <section className="relative h-screen overflow-hidden">
@@ -33,7 +56,7 @@ const Hero = () => {
 
           {/* Booking Form */}
           <div className="max-w-4xl mx-auto bg-white/10 backdrop-blur-sm p-6 rounded-lg">
-            <form className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="relative">
                 <input
                   type="date"
@@ -41,6 +64,7 @@ const Hero = () => {
                   onChange={(e) => setStartDate(e.target.value)}
                   className="w-full p-3 rounded-lg bg-white/20 text-white placeholder-white/70"
                   placeholder="Check in"
+                  required
                 />
                 <input
                   type="date"
@@ -48,6 +72,7 @@ const Hero = () => {
                   onChange={(e) => setEndDate(e.target.value)}
                   className="w-full p-3 rounded-lg bg-white/20 text-white placeholder-white/70 mt-2"
                   placeholder="Check out"
+                  required
                 />
               </div>
               
@@ -101,7 +126,7 @@ const Hero = () => {
 
               <button
                 type="submit"
-                className="bg-primary text-white py-3 px-6 rounded-lg hover:bg-primary/90 transition-colors"
+                className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
               >
                 Search
               </button>

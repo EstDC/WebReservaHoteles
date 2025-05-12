@@ -331,7 +331,14 @@ const HotelDetails = ({ hotelId }) => {
                         </div>
                         {/* Botón reservar */}
                         <button
-                          onClick={() => window.location.href = `/booking/new?roomId=${room.id}`}
+                          onClick={() => {
+                            const user = useHotelStore.getState().user;
+                            if (!user) {
+                              window.location.href = `/auth/login?redirect=/booking/new?roomId=${room.id}`;
+                            } else {
+                              window.location.href = `/booking/new?roomId=${room.id}`;
+                            }
+                          }}
                           className="bg-[#a89c91] text-white px-6 py-2 rounded-none hover:bg-[#8c837a] transition-colors font-bold text-lg md:text-xl w-full md:w-auto"
                         >
                           {t('common.bookNow')}

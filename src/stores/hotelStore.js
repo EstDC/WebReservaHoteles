@@ -1,92 +1,175 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { hotelService } from '../services/hotelService'
-import { roomService } from '../services/roomService'
-import { bookingService } from '../services/bookingService'
-import { api } from '../services/api'
+import api from '../utils/api'
 
-/**
- * @typedef {import('../types/api').User} User
- * @typedef {import('../types/api').Hotel} Hotel
- * @typedef {import('../types/api').Booking} Booking
- * @typedef {import('../types/api').SearchFilters} SearchFilters
- */
+// Función para guardar logs
+const saveLog = (message, data = null) => {
+  if (typeof window === 'undefined') return;
+  
+  const logs = JSON.parse(localStorage.getItem('loginLogs') || '[]');
+  logs.push({
+    message,
+    data,
+    timestamp: new Date().toISOString()
+  });
+  localStorage.setItem('loginLogs', JSON.stringify(logs));
+};
 
-/**
- * @typedef {Object} HotelState
- * @property {User | null} user
- * @property {(user: User) => void} login
- * @property {() => void} logout
- * @property {'es' | 'en'} language
- * @property {'EUR' | 'USD'} currency
- * @property {(lang: 'es' | 'en') => void} setLanguage
- * @property {(curr: 'EUR' | 'USD') => void} setCurrency
- * @property {Hotel[]} hotels
- * @property {string} searchQuery
- * @property {Hotel | null} selectedHotel
- * @property {boolean} loading
- * @property {string | null} error
- * @property {SearchFilters} filters
- * @property {Booking[]} bookings
- * @property {(query: string) => void} setSearchQuery
- * @property {(hotel: Hotel | null) => void} setSelectedHotel
- * @property {(hotels: Hotel[]) => void} setHotels
- * @property {(loading: boolean) => void} setLoading
- * @property {(error: string | null) => void} setError
- * @property {(filters: Partial<SearchFilters>) => void} setFilters
- * @property {(booking: Omit<Booking, 'id' | 'createdAt' | 'updatedAt'>) => void} addBooking
- * @property {(bookingId: number) => void} cancelBooking
- * @property {(email: string, newPassword: string) => void} recoverPassword
- */
-
-export const useHotelStore = create(
+const useHotelStore = create(
   persist(
     (set, get) => ({
-      // Estado inicial de autenticación
+      // Estado inicial
       user: null,
-      login: (user) => set({ user }),
-      logout: () => set({ user: null }),
-
-      // Configuración inicial
-      language: 'es',
-      currency: 'EUR',
-      setLanguage: (lang) => set({ language: lang }),
-      setCurrency: (curr) => set({ currency: curr }),
-
-      // Estado inicial de hoteles
+      token: null,
+      isInitialized: false,
       hotels: [],
-      searchQuery: '',
       selectedHotel: null,
       loading: false,
       error: null,
-      filters: {},
-      bookings: [],
 
-      // Acciones
-      setSearchQuery: (query) => set({ searchQuery: query }),
-      setSelectedHotel: (hotel) => set({ selectedHotel: hotel }),
-      setHotels: (hotels) => set({ hotels }),
-      setLoading: (loading) => set({ loading }),
-      setError: (error) => set({ error }),
-      setFilters: (newFilters) =>
-        set((state) => ({
-          filters: { ...state.filters, ...newFilters },
-        })),
+      // Autenticación
+      login: async (credentials) => {
+        try {
+          saveLog('Iniciando proceso de login');
+          saveLog('Enviando credenciales', credentials);
+          
+          const response = await api.post('/usuarios/login', credentials);
+          saveLog('Respuesta del servidor', response.data);
+          
+          const { token, usuario } = response.data;
 
-      // Acciones de API
+          if (!usuario || !token) {
+            throw new Error('Respuesta inválida del servidor');
+          }
+
+          saveLog('Token recibido', token);
+          saveLog('Usuario recibido', usuario);
+
+          // Guardar token y configurar headers
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('token', token);
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            saveLog('Token guardado en localStorage y configurado en headers');
+          }
+          
+          // Actualizar estado directamente sin intentar restaurar la sesión
+          set({ 
+            user: usuario, 
+            token, 
+            isInitialized: true,
+            error: null 
+          });
+          
+          saveLog('Login exitoso');
+          return usuario;
+        } catch (error) {
+          console.error('Error en login:', error);
+          saveLog('Error en login', error.message);
+          set({ error: error.message });
+          throw error;
+        }
+      },
+
+      logout: () => {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('token');
+          delete api.defaults.headers.common['Authorization'];
+          saveLog('Logout: Token eliminado de localStorage y headers');
+        }
+        set({ 
+          user: null, 
+          token: null, 
+          isInitialized: true,
+          error: null 
+        });
+      },
+
+      // Inicialización
+      initialize: async () => {
+        if (typeof window === 'undefined') return;
+        
+        const token = localStorage.getItem('token');
+        saveLog('Inicializando store, token en localStorage:', token ? 'Presente' : 'No presente');
+        
+        if (token) {
+          try {
+            // Configurar el token en los headers de axios
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            saveLog('Token configurado en headers para petición de perfil');
+            
+            // Intentar obtener el perfil del usuario usando el endpoint correcto
+            const response = await api.get('/usuarios/perfil');
+            saveLog('Respuesta de perfil recibida', response.data);
+            
+            // Actualizar el estado con el token y los datos del usuario
+            set({ 
+                user: {
+                    id: response.data.id,
+                    name: response.data.nombre,
+                    surname: response.data.apellido,
+                    email: response.data.email,
+                    phone: response.data.telefono,
+                    role: response.data.rol,
+                    active: response.data.activo,
+                    registrationDate: response.data.fechaRegistro,
+                    lastModified: response.data.ultimaModificacion
+                }, 
+                token, 
+                isInitialized: true,
+                error: null 
+            });
+            saveLog('Store inicializado con datos de usuario');
+          } catch (error) {
+            console.error('Error al restaurar sesión:', error);
+            saveLog('Error al restaurar sesión', error.message);
+            
+            // Si hay un error 401, limpiar el token
+            if (error.response?.status === 401) {
+              localStorage.removeItem('token');
+              delete api.defaults.headers.common['Authorization'];
+              set({ 
+                user: null, 
+                token: null, 
+                isInitialized: true,
+                error: null 
+              });
+              saveLog('Token inválido eliminado');
+            } else {
+              // Para otros errores, mantener el token pero marcar como inicializado
+              set({ 
+                isInitialized: true,
+                error: error.message 
+              });
+              saveLog('Store inicializado con error', error.message);
+            }
+          }
+        } else {
+          set({ 
+            user: null, 
+            token: null, 
+            isInitialized: true,
+            error: null 
+          });
+          saveLog('Store inicializado sin token');
+        }
+      },
+
+      // Gestión de hoteles
       fetchHotels: async (filters = {}) => {
         try {
           set({ loading: true, error: null });
-          // Log de los filtros enviados
-          console.log('Enviando filtros a /hoteles/buscar:', filters);
-          // Construir query params solo con los filtros no vacíos
           const params = Object.fromEntries(
             Object.entries(filters).filter(([_, v]) => v !== '' && v !== null && v !== undefined)
           );
-          const { data } = await api.get('/hoteles/buscar', { params });
-          set({ hotels: data, loading: false });
+          const { data } = await api.get('/hoteles', { params });
+          set({ 
+            hotels: Array.isArray(data) ? data : data.content || [], 
+            loading: false,
+            error: null 
+          });
           return data;
         } catch (error) {
+          console.error('Error al obtener hoteles:', error);
           set({ error: error.message, loading: false });
           throw error;
         }
@@ -95,90 +178,61 @@ export const useHotelStore = create(
       fetchHotelById: async (id) => {
         try {
           set({ loading: true, error: null });
-          const data = await hotelService.getHotelById(id);
-          set({ selectedHotel: data, loading: false });
-          return data;
-        } catch (error) {
-          set({ error: error.message, loading: false });
-          throw error;
-        }
-      },
-
-      fetchRooms: async (hotelId, filters = {}) => {
-        try {
-          set({ loading: true, error: null });
-          const data = await roomService.getRooms(hotelId, filters);
-          return data;
-        } catch (error) {
-          set({ error: error.message, loading: false });
-          throw error;
-        }
-      },
-
-      createBooking: async (bookingData) => {
-        try {
-          set({ loading: true, error: null });
-          const data = await bookingService.createBooking(bookingData);
-          set((state) => ({
-            bookings: [...state.bookings, data],
-            loading: false
-          }));
-          return data;
-        } catch (error) {
-          set({ error: error.message, loading: false });
-          throw error;
-        }
-      },
-
-      cancelBooking: async (bookingId) => {
-        try {
-          set({ loading: true, error: null });
-          const data = await bookingService.cancelBooking(bookingId);
-          set((state) => ({
-            bookings: state.bookings.map((booking) =>
-              booking.id === bookingId ? data : booking
-            ),
-            loading: false
-          }));
-          return data;
-        } catch (error) {
-          set({ error: error.message, loading: false });
-          throw error;
-        }
-      },
-
-      fetchBookings: async (filters = {}) => {
-        try {
-          set({ loading: true, error: null });
-          const data = await bookingService.getBookings(filters);
-          set({ bookings: data.content, loading: false });
-          return data;
-        } catch (error) {
-          set({ error: error.message, loading: false });
-          throw error;
-        }
-      },
-
-      recoverPassword: async (email, newPassword) => {
-        try {
-          const response = await api.post('/auth/recover-password', {
-            email,
-            newPassword
+          const { data } = await api.get(`/hoteles/${id}`);
+          set({ 
+            selectedHotel: data, 
+            loading: false,
+            error: null 
           });
-          return response.data;
+          return data;
         } catch (error) {
-          throw new Error(error.response?.data?.message || 'Error al recuperar la contraseña');
+          set({ error: error.message, loading: false });
+          throw error;
         }
+      },
+
+      setSelectedHotel: (hotel) => set({ selectedHotel: hotel }),
+
+      // Configuración de la aplicación
+      language: 'es',
+      currency: 'EUR',
+      setLanguage: (lang) => set({ language: lang }),
+      setCurrency: (curr) => set({ currency: curr }),
+
+      // Actualización de usuario
+      updateUser: (userData) => {
+        set((state) => ({
+          user: {
+            ...state.user,
+            ...userData
+          }
+        }));
+      },
+
+      // Utilidades
+      showLoginLogs: () => {
+        if (typeof window === 'undefined') return;
+        const logs = JSON.parse(localStorage.getItem('loginLogs') || '[]');
+        console.group('Login Logs');
+        logs.forEach(log => {
+          console.log(`[${log.timestamp}] ${log.message}:`, log.data);
+        });
+        console.groupEnd();
       }
     }),
     {
       name: 'hotel-store',
+      getStorage: () => localStorage,
       partialize: (state) => ({
         user: state.user,
+        token: state.token,
         language: state.language,
         currency: state.currency,
-        bookings: state.bookings,
-      }),
+        hotels: state.hotels,
+        selectedHotel: state.selectedHotel
+      })
     }
   )
-) 
+);
+
+export { useHotelStore };

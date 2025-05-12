@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHotelStore } from '../../stores/hotelStore';
 import { useTranslation } from 'react-i18next';
 
@@ -19,6 +19,7 @@ const hotelImages = {
 
 // Extrae la ciudad del nombre del hotel
 function getCityFromHotelName(nombre) {
+  if (!nombre) return null;
   const match = nombre.match(/Hotel\s+([A-Za-zÁÉÍÓÚáéíóúñÑ]+)/);
   if (match && match[1]) {
     let ciudad = match[1];
@@ -34,12 +35,28 @@ function getCityFromHotelName(nombre) {
 const HotelList = () => {
   const { t } = useTranslation();
   const { hotels, loading, error, fetchHotels } = useHotelStore();
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [imageErrors, setImageErrors] = useState({});
 
   useEffect(() => {
-    fetchHotels();
+    const loadHotels = async () => {
+      try {
+        setIsInitialLoad(true);
+        await fetchHotels();
+      } catch (err) {
+        console.error('Error al cargar hoteles:', err);
+      } finally {
+        setIsInitialLoad(false);
+      }
+    };
+    loadHotels();
   }, [fetchHotels]);
 
-  if (loading) {
+  const handleImageError = (hotelId) => {
+    setImageErrors(prev => ({ ...prev, [hotelId]: true }));
+  };
+
+  if (isInitialLoad) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -50,15 +67,28 @@ const HotelList = () => {
   if (error) {
     return (
       <div className="text-center text-red-600 p-4">
-        {t('hotels.error')}
+        <p className="font-semibold">{t('common.error')}</p>
+        <p>{error}</p>
+        <button 
+          onClick={() => fetchHotels()} 
+          className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
+        >
+          {t('common.retry')}
+        </button>
       </div>
     );
   }
 
-  if (!hotels.length) {
+  if (!hotels || !hotels.length) {
     return (
       <div className="text-center text-gray-600 p-4">
-        {t('hotels.noHotels')}
+        <p className="font-semibold">{t('hotels.noHotels')}</p>
+        <button 
+          onClick={() => fetchHotels()} 
+          className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
+        >
+          {t('common.refresh')}
+        </button>
       </div>
     );
   }
@@ -69,14 +99,18 @@ const HotelList = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {hotels.map((hotel) => {
           const ciudad = getCityFromHotelName(hotel.nombre);
-          const imgSrc = ciudad && hotelImages[ciudad] ? `/${hotelImages[ciudad]}` : '/images/img/hotel-placeholder.jpg';
+          const imgSrc = !imageErrors[hotel.id] && ciudad && hotelImages[ciudad] 
+            ? `/${hotelImages[ciudad]}` 
+            : '/images/img/hotel-placeholder.jpg';
+          
           return (
-            <div key={hotel.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div key={hotel.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
               <div className="relative h-48">
                 <img
                   src={imgSrc}
                   alt={hotel.nombre}
                   className="w-full h-full object-cover"
+                  onError={() => handleImageError(hotel.id)}
                 />
                 {hotel.calificacion && (
                   <div className="absolute top-2 right-2 bg-primary text-white px-2 py-1 rounded">
@@ -95,12 +129,12 @@ const HotelList = () => {
                     {Array.from({ length: hotel.estrellas }).map((_, i) => '★').join('')}
                   </p>
                 )}
-                <button
-                  onClick={() => window.location.href = `/hotels/${hotel.id}`}
-                  className="mt-4 w-full bg-primary text-white py-2 rounded-md hover:bg-primary/90"
+                <a
+                  href={`/hotels/${hotel.id}`}
+                  className="mt-4 w-full bg-primary text-white py-2 rounded-md hover:bg-primary/90 transition-colors duration-300 block text-center"
                 >
                   {t('hotels.viewDetails')}
-                </button>
+                </a>
               </div>
             </div>
           );

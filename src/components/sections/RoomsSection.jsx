@@ -1,7 +1,17 @@
 import { motion } from 'framer-motion';
 import { FaBed, FaWifi, FaSwimmingPool, FaTv, FaCoffee } from 'react-icons/fa';
+import { useHotelStore } from '../../stores/hotelStore';
 
 const RoomCard = ({ image, title, price, features }) => {
+  const handleViewDetails = () => {
+    const user = useHotelStore.getState().user;
+    if (!user) {
+      window.location.href = `/auth/login?redirect=/rooms/${title.toLowerCase().replace(/\s+/g, '-')}`;
+    } else {
+      window.location.href = `/rooms/${title.toLowerCase().replace(/\s+/g, '-')}`;
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -38,12 +48,12 @@ const RoomCard = ({ image, title, price, features }) => {
           ))}
         </div>
 
-        <a
-          href="#"
+        <button
+          onClick={handleViewDetails}
           className="inline-block bg-primary text-white px-6 py-2 rounded-full hover:bg-primary/90 transition-colors"
         >
           View Details
-        </a>
+        </button>
       </div>
     </motion.div>
   );

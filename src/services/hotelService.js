@@ -1,4 +1,4 @@
-import { api } from './api';
+import api from '../utils/api';
 
 export const hotelService = {
   // Obtener lista de hoteles con filtros
