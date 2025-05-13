@@ -9,81 +9,104 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
-  }
+  },
+  timeout: 10000 // 10 segundos de timeout
 });
 
-// Request interceptor para añadir el token de autenticación
+// Función para obtener el token
+const getToken = () => {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('token');
+};
+
+// Función para configurar el token en los headers
+const setAuthHeader = (token) => {
+  if (token) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete api.defaults.headers.common['Authorization'];
+  }
+};
+
+// Configurar el token inicial si existe
+const initialToken = getToken();
+if (initialToken) {
+  setAuthHeader(initialToken);
+}
+
+// Interceptor de peticiones
 api.interceptors.request.use(
   (config) => {
-    console.group('API Request Interceptor');
+    console.log('API Request Interceptor');
     console.log('URL:', config.url);
     console.log('Method:', config.method);
     console.log('Base URL:', config.baseURL);
-    console.log('Full URL:', `${config.baseURL}${config.url}`);
+    console.log('Full URL:', config.baseURL + config.url);
     console.log('Data:', config.data);
     console.log('Original Headers:', config.headers);
-    
-    const token = localStorage.getItem('token');
+
+    // Obtener el token del localStorage
+    const token = getToken();
     console.log('Token en localStorage:', token ? 'Presente' : 'No presente');
-    
+
+    // Si hay token, añadirlo a los headers
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-      console.log('Headers después de añadir token:', config.headers);
+      config.headers['Authorization'] = `Bearer ${token}`;
+      console.log('Token añadido a los headers:', config.headers['Authorization']);
     } else {
       console.log('No se añadió token a los headers');
     }
-    
-    console.groupEnd();
+
     return config;
   },
   (error) => {
-    console.error('API Request Error:', error);
+    console.error('Error en interceptor de peticiones:', error);
     return Promise.reject(error);
   }
 );
 
-// Response interceptor para manejar errores
+// Interceptor de respuestas
 api.interceptors.response.use(
   (response) => {
-    console.group('API Response Interceptor');
+    console.log('API Response Interceptor');
     console.log('URL:', response.config.url);
     console.log('Status:', response.status);
     console.log('Data:', response.data);
     console.log('Headers:', response.headers);
-    console.groupEnd();
+
+    // Si hay un token en los headers de la respuesta, guardarlo
+    const token = response.headers['authorization'];
+    if (token) {
+      localStorage.setItem('token', token);
+      setAuthHeader(token);
+      console.log('Token guardado desde headers de respuesta');
+    }
+
     return response;
   },
   (error) => {
-    console.group('API Error Interceptor');
+    console.log('API Error Interceptor');
     console.log('URL:', error.config?.url);
     console.log('Status:', error.response?.status);
     console.log('Status Text:', error.response?.statusText);
     console.log('Headers:', error.response?.headers);
     console.log('Data:', error.response?.data);
     console.log('Message:', error.message);
-    console.log('Config:', {
-      baseURL: error.config?.baseURL,
-      headers: error.config?.headers,
-      method: error.config?.method
-    });
-    console.groupEnd();
+    console.log('Config:', error.config);
 
+    // Si el error es 401, limpiar el token
     if (error.response?.status === 401) {
-      console.log('Error 401 - Token inválido o expirado');
       localStorage.removeItem('token');
-      delete api.defaults.headers.common['Authorization'];
-      window.location.href = '/auth/login';
-    } else if (error.code === 'ERR_NETWORK') {
-      console.log('Error de red - Verificar conexión con el servidor');
-    } else if (error.response?.status === 403) {
-      console.log('Error 403 - Acceso denegado');
-      // Manejar error de acceso denegado
-    } else if (error.response?.status === 404) {
-      console.log('Error 404 - Recurso no encontrado');
-      // Manejar error de recurso no encontrado
-    } else if (error.response?.status >= 500) {
-      console.log('Error del servidor - Contactar con soporte');
-      // Manejar error del servidor
+      setAuthHeader(null);
+      console.log('Token eliminado por error 401');
+      
+      // Si estamos en el cliente y no estamos en la página de login, redirigir
+      if (typeof window !== 'undefined' && !window.location.pathname.includes('/auth/login')) {
+        const event = new CustomEvent('navigate', {
+          detail: { url: '/auth/login?redirect=' + window.location.pathname }
+        });
+        window.dispatchEvent(event);
+      }
     }
 
     return Promise.reject(error);

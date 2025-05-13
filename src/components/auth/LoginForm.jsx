@@ -4,16 +4,22 @@ import { useTranslation } from 'react-i18next';
 import { FaCheckCircle } from 'react-icons/fa';
 
 const LoginForm = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   
   // Obtener las funciones del store directamente
   const login = useHotelStore((state) => state.login);
   const user = useHotelStore((state) => state.user);
+
+  // Marcar cuando estamos en el cliente
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Redirigir si el usuario ya está autenticado
   useEffect(() => {
@@ -84,6 +90,11 @@ const LoginForm = () => {
         </div>
       </div>
     );
+  }
+
+  // No renderizar nada hasta que estemos en el cliente
+  if (!isClient) {
+    return null;
   }
 
   return (

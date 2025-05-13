@@ -97,8 +97,12 @@ const useHotelStore = create(
             api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             saveLog('Token configurado en headers para petición de perfil');
             
-            // Intentar obtener el perfil del usuario usando el endpoint correcto
-            const response = await api.get('/usuarios/perfil');
+            // Obtener el ID del usuario del token
+            const decodedToken = JSON.parse(atob(token.split('.')[1]));
+            const userId = decodedToken.id;
+            
+            // Obtener los datos completos del usuario usando el ID
+            const response = await api.get(`/usuarios/${userId}`);
             saveLog('Respuesta de perfil recibida', response.data);
             
             // Actualizar el estado con el token y los datos del usuario

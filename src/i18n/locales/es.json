@@ -13,6 +13,28 @@
     "showMore": "Mostrar más",
     "showLess": "Mostrar menos"
   },
+  "auth": {
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes una cuenta?",
+    "loginError": "Error al iniciar sesión",
+    "requiredFields": "Por favor, completa todos los campos",
+    "invalidCredentials": "Credenciales inválidas",
+    "invalidEmail": "Correo electrónico inválido",
+    "networkError": "Error de conexión. Por favor, intenta de nuevo",
+    "name": "Nombre",
+    "phone": "Teléfono",
+    "confirmPassword": "Confirmar contraseña",
+    "passwordsDoNotMatch": "Las contraseñas no coinciden",
+    "registerError": "Error al registrarse",
+    "recoveryError": "Error al procesar la recuperación de contraseña",
+    "recoveryEmailSent": "Se ha enviado un email de recuperación",
+    "resetPassword": "Restablecer contraseña",
+    "sendRecoveryEmail": "Enviar email de recuperación"
+  },
   "hotels": {
     "title": "Hoteles Disponibles",
     "error": "Error al cargar los hoteles",
@@ -75,8 +97,21 @@
     "totalPrice": "Precio total",
     "status": {
       "pending": "Pendiente",
-      "confirmed": "Confirmado",
-      "cancelled": "Cancelado"
+      "confirmed": "Confirmada",
+      "cancelled": "Cancelada"
     }
+  },
+  "profile": {
+    "update": "Actualizar perfil",
+    "changePassword": "Cambiar contraseña",
+    "currentPassword": "Contraseña actual",
+    "newPassword": "Nueva contraseña",
+    "confirmNewPassword": "Confirmar nueva contraseña",
+    "updatePassword": "Actualizar contraseña",
+    "updateSuccess": "Perfil actualizado correctamente",
+    "passwordUpdateSuccess": "Contraseña actualizada correctamente",
+    "dangerZone": "Zona de peligro",
+    "deleteAccount": "Eliminar cuenta",
+    "deleteAccountConfirm": "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer."
   }
 } 

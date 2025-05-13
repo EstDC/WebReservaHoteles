@@ -13,6 +13,28 @@
     "showMore": "Show more",
     "showLess": "Show less"
   },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "login": "Login",
+    "register": "Register",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "loginError": "Login error",
+    "requiredFields": "Please fill in all fields",
+    "invalidCredentials": "Invalid credentials",
+    "invalidEmail": "Invalid email",
+    "networkError": "Connection error. Please try again",
+    "name": "Name",
+    "phone": "Phone",
+    "confirmPassword": "Confirm password",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "registerError": "Registration error",
+    "recoveryError": "Error processing password recovery",
+    "recoveryEmailSent": "Recovery email has been sent",
+    "resetPassword": "Reset password",
+    "sendRecoveryEmail": "Send recovery email"
+  },
   "hotels": {
     "title": "Available Hotels",
     "error": "Error loading hotels",
@@ -78,5 +100,18 @@
       "confirmed": "Confirmed",
       "cancelled": "Cancelled"
     }
+  },
+  "profile": {
+    "update": "Update profile",
+    "changePassword": "Change password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmNewPassword": "Confirm new password",
+    "updatePassword": "Update password",
+    "updateSuccess": "Profile updated successfully",
+    "passwordUpdateSuccess": "Password updated successfully",
+    "dangerZone": "Danger Zone",
+    "deleteAccount": "Delete account",
+    "deleteAccountConfirm": "Are you sure you want to delete your account? This action cannot be undone."
   }
 } 

@@ -34,54 +34,70 @@ const AccountLayout = () => {
     }
   }, [activeTab]);
 
+  // Función reutilizable para cargar el perfil
+  const fetchProfile = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      if (!token) return;
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      const userId = decodedToken.id;
+      const response = await api.get(`/usuarios/${userId}`);
+      const userData = response.data;
+
+      // Ensure dates are properly formatted
+      const registrationDate = Array.isArray(userData.fechaRegistro)
+        ? new Date(userData.fechaRegistro[0], userData.fechaRegistro[1] - 1, userData.fechaRegistro[2],
+                  userData.fechaRegistro[3], userData.fechaRegistro[4], userData.fechaRegistro[5]).toISOString()
+        : userData.fechaRegistro;
+
+      const lastModified = Array.isArray(userData.ultimaModificacion)
+        ? new Date(userData.ultimaModificacion[0], userData.ultimaModificacion[1] - 1, userData.ultimaModificacion[2],
+                  userData.ultimaModificacion[3], userData.ultimaModificacion[4], userData.ultimaModificacion[5]).toISOString()
+        : userData.ultimaModificacion;
+
+      updateUser({
+        id: userData.id,
+        name: userData.nombre,
+        surname: userData.apellido,
+        email: userData.email,
+        phone: userData.telefono,
+        role: userData.rol,
+        active: userData.activo,
+        registrationDate: registrationDate,
+        lastModified: lastModified,
+        password: userData.password || "",
+        tokenRecuperacion: userData.tokenRecuperacion || null,
+        tokenExpiracion: userData.tokenExpiracion || null
+      });
+
+      setFormData({
+        name: userData.nombre || '',
+        surname: userData.apellido || '',
+        email: userData.email || '',
+        phone: userData.telefono || ''
+      });
+    } catch (error) {
+      console.error('Error al cargar el perfil:', error);
+      setError('Error al cargar la página. Por favor, intenta de nuevo más tarde.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Efecto 1: inicializa el store si no hay usuario o token
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        // Intentar inicializar el store si no está inicializado
-        if (!user || !token) {
-          await initialize();
-        }
-        
-        if (!user || !token) {
-          const event = new CustomEvent('navigate', {
-            detail: { url: '/auth/login?redirect=/account' }
-          });
-          window.dispatchEvent(event);
-          return;
-        }
-
-        // Obtener los datos completos del usuario desde la API
-        const response = await api.get('/usuarios/perfil');
-        const userData = response.data;
-        
-        setFormData({
-          name: userData.nombre || '',
-          surname: userData.apellido || '',
-          email: userData.email || '',
-          phone: userData.telefono || ''
-        });
-
-      } catch (error) {
-        console.error('Error al inicializar:', error);
-        if (error.response?.status === 401) {
-          // Si no está autorizado, redirigir al login
-          const event = new CustomEvent('navigate', {
-            detail: { url: '/auth/login?redirect=/account' }
-          });
-          window.dispatchEvent(event);
-          return;
-        }
-        setError('Error al cargar la página. Por favor, intenta de nuevo más tarde.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
+    if (!user || !token) {
+      initialize();
+    }
   }, [user, token, initialize]);
+
+  // Efecto 2: cuando hay token, carga el perfil (NO depende de user)
+  useEffect(() => {
+    if (!token) return;
+    fetchProfile();
+    // eslint-disable-next-line
+  }, [token]);
 
   // Efecto para cargar las reservas cuando se selecciona la pestaña
   useEffect(() => {
@@ -91,18 +107,16 @@ const AccountLayout = () => {
           setLoadingBookings(true);
           setError(null);
           const response = await api.get(`/reservas/usuario/${user.id}`);
-          setBookings(response.data || []); // Aseguramos que siempre sea un array
+          setBookings(response.data || []);
         } catch (error) {
           console.error('Error al cargar las reservas:', error);
           if (error.response?.status === 401) {
-            // Si no está autorizado, redirigir al login
             const event = new CustomEvent('navigate', {
               detail: { url: '/auth/login?redirect=/account' }
             });
             window.dispatchEvent(event);
             return;
           }
-          // Si es un 404, significa que no hay reservas, no es un error
           if (error.response?.status === 404) {
             setBookings([]);
             return;
@@ -117,20 +131,16 @@ const AccountLayout = () => {
     loadBookings();
   }, [activeTab, user, token]);
 
-  // Validar formato de teléfono
   const validatePhone = (phone) => {
-    if (!phone) return true; // El teléfono es opcional
-    // Validar que sea un número de teléfono válido (puedes ajustar el regex según tus necesidades)
+    if (!phone) return true;
     const phoneRegex = /^\+?[0-9]{9,15}$/;
     return phoneRegex.test(phone);
   };
 
   const handleLogout = async () => {
-    // Mostrar confirmación antes de cerrar sesión
     if (!window.confirm('¿Estás seguro de que deseas cerrar sesión?')) {
       return;
     }
-
     try {
       await logout();
       const event = new CustomEvent('navigate', {
@@ -144,7 +154,6 @@ const AccountLayout = () => {
   };
 
   const handleCancelEdit = () => {
-    // Restaurar los valores originales del formulario
     setFormData({
       name: user.name || '',
       surname: user.surname || '',
@@ -161,12 +170,9 @@ const AccountLayout = () => {
     setProfileError(null);
     setProfileSuccess(false);
 
-    // Guardar los valores actuales antes de intentar la actualización
     const originalFormData = { ...formData };
-
     const formDataToUpdate = new FormData(e.target);
 
-    // Validar teléfono
     if (!validatePhone(formDataToUpdate.get('phone'))) {
       setProfileError('El formato del teléfono no es válido. Debe ser un número de 9 a 15 dígitos, opcionalmente precedido por +');
       setUpdatingProfile(false);
@@ -174,40 +180,38 @@ const AccountLayout = () => {
     }
 
     try {
-      const response = await api.put(`/usuarios/${user.id}`, {
+      // Get current user data to ensure we have all required fields
+      const currentUserResponse = await api.get(`/usuarios/${user.id}`);
+      const currentUser = currentUserResponse.data;
+
+      // Ensure we have all required fields and proper date formatting
+      const updateData = {
+        id: user.id,
         nombre: formDataToUpdate.get('name'),
         apellido: formDataToUpdate.get('surname'),
-        email: formDataToUpdate.get('email'),
-        telefono: formDataToUpdate.get('phone')
-      });
+        email: user.email,
+        password: currentUser.password, // Keep the current password from the backend
+        telefono: formDataToUpdate.get('phone'),
+        rol: user.role,
+        activo: user.active,
+        fechaRegistro: currentUser.fechaRegistro, // Keep original registration date
+        ultimaModificacion: new Date().toISOString(),
+        tokenRecuperacion: currentUser.tokenRecuperacion || null,
+        tokenExpiracion: currentUser.tokenExpiracion || null
+      };
 
-      const updatedUser = response.data;
-      
-      // Actualizar el store con los nuevos datos
-      updateUser({
-        ...user,
-        name: updatedUser.nombre,
-        surname: updatedUser.apellido,
-        phone: updatedUser.telefono
-      });
-
-      setFormData({
-        name: updatedUser.nombre,
-        surname: updatedUser.apellido,
-        email: updatedUser.email,
-        phone: updatedUser.telefono
-      });
+      console.log('Sending update data:', updateData);
+      await api.put(`/usuarios/${user.id}`, updateData);
 
       setProfileSuccess(true);
-      
-      // Ocultar el mensaje de éxito después de 3 segundos
+      await fetchProfile();
+
       setTimeout(() => {
         setProfileSuccess(false);
       }, 3000);
     } catch (error) {
       console.error('Error al actualizar el perfil:', error);
       setProfileError(error.response?.data?.error || 'Error al actualizar el perfil. Por favor, intenta de nuevo.');
-      // Restaurar los valores originales en caso de error
       setFormData(originalFormData);
     } finally {
       setUpdatingProfile(false);
@@ -478,32 +482,26 @@ const AccountLayout = () => {
                 return;
               }
               try {
-                // Primero obtenemos el usuario actual para asegurarnos de tener todos los datos
                 const currentUserResponse = await api.get(`/usuarios/${user.id}`);
                 const currentUser = currentUserResponse.data;
-                
                 const userData = {
-                  ...currentUser,  // Mantenemos todos los datos actuales
+                  ...currentUser,
                   nombre: user.name,
                   apellido: user.surname,
                   email: user.email,
                   telefono: user.phone,
                   rol: user.role || 'CLIENTE',
-                  password: newPassword,  // Nueva contraseña
+                  password: newPassword,
                   activo: true
                 };
-                
                 console.log('Usuario actual:', currentUser);
                 console.log('Enviando datos de actualización:', userData);
                 const response = await api.put(`/usuarios/${user.id}`, userData);
                 console.log('Respuesta del servidor:', response.data);
-                
-                // Actualizar el store con los nuevos datos
                 updateUser({
                   ...user,
                   password: newPassword
                 });
-                
                 setPasswordSuccess(true);
                 e.target.newPassword.value = '';
                 e.target.confirmPassword.value = '';
@@ -560,4 +558,4 @@ const AccountLayout = () => {
   );
 };
 
-export default AccountLayout; 
+export default AccountLayout;
