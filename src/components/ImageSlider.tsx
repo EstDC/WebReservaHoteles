@@ -29,7 +29,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
   return (
     <div className="relative w-full overflow-hidden" style={{ borderRadius: 0 }}>
       <div 
-        className="relative w-full"
+        className="relative w-full h-full"
         style={{ paddingTop: `${(1 / aspectRatio) * 100}%` }}
       >
         {images.map((image, index) => (

@@ -1,0 +1,43 @@
+---
+import ReservaForm from '../../components/booking/ReservaForm.jsx';
+import Header from '../../components/layout/Header.jsx';
+import Footer from '../../components/layout/Footer.jsx';
+import HeroHabitacionReserva from '../../components/booking/HeroHabitacionReserva';
+import ReservaStepper from '../../components/booking/ReservaStepper';
+
+const url = new URL(Astro.request.url);
+const roomId = url.searchParams.get('roomId');
+const hotelId = url.searchParams.get('hotelId');
+
+let habitacion = null;
+if (roomId) {
+  // Fetch de la habitación desde el backend
+  const res = await fetch(`http://localhost:8081/api/habitaciones/${roomId}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  });
+  if (res.ok) {
+    habitacion = await res.json();
+    // Añadimos el hotelId a la habitación
+    if (hotelId) {
+      habitacion.hotelId = parseInt(hotelId);
+    }
+    console.log('Habitación cargada:', habitacion);
+  }
+}
+---
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Reserva de habitación</title>
+  </head>
+  <body>
+    <Header client:load />
+     {habitacion && <HeroHabitacionReserva habitacion={habitacion} />}
+    <main class="p-0 m-0">
+      <ReservaStepper habitacionId={roomId} client:load />
+    </main>
+    <Footer client:load />
+  </body>
+</html> 

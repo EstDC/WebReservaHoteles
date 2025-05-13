@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { FaTimes, FaBars, FaUser } from 'react-icons/fa';
 import { useHotelStore } from '../../stores/hotelStore';
 
-const Header = () => {
+const Header = ({ transparent = false }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { user, logout } = useHotelStore();
@@ -39,7 +39,7 @@ const Header = () => {
       className={`fixed w-full z-50 transition-all duration-300 ${
         scrolled
           ? 'bg-black/90 backdrop-blur-sm'
-          : 'bg-transparent'
+          : (transparent ? 'bg-transparent' : 'bg-black/20 backdrop-blur-sm')
       }`}
     >
       <div className="container mx-auto px-4">
