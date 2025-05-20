@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 const AboutSection = () => {
   return (
-    <section className="py-20 bg-accent">
+    <section id="about" className="py-20 bg-accent">
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row-reverse items-center gap-12">
           {/* Images Section */}
@@ -43,32 +43,28 @@ const AboutSection = () => {
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
             >
-              <div className="mb-6">
-                <small className="text-primary font-montserrat uppercase tracking-wider">Sobre nosotros</small>
-                <h2 className="text-4xl md:text-5xl font-caveat mt-2 text-secondary">
+              <div className="mb-6 relative">
+                <small className="text-primary font-alcantera-script tracking-wider text-8xl relative z-10">
+                  Sobre nosotros
+                </small>
+                <h2
+                  className="text-6xl md:text-7xl font-lorise-sans text-secondary font-bold
+                    -mt-8 md:-mt-12 mx-auto text-center relative z-20"
+                  style={{ letterSpacing: '-0.03em' }}
+                >
                   Servicios personalizados y experiencias únicas
                 </h2>
               </div>
 
-              <p className="text-lg text-gray-600 mb-4">
-                En HotelFinder, nos dedicamos a crear experiencias memorables para nuestros huéspedes. Cada detalle está cuidadosamente pensado para ofrecerte el máximo confort y lujo.
-              </p>
-
-              <p className="text-gray-600 mb-6">
-                Nuestro equipo está comprometido con la excelencia en el servicio, asegurando que cada momento de tu estancia sea perfecto. Desde la decoración hasta la gastronomía, todo está diseñado para superar tus expectativas.
-              </p>
-
-              <div className="flex items-center space-x-4">
-                <img
-                  src="/img/signature.png"
-                  alt="Firma del propietario"
-                  className="h-12"
-                />
-                <div>
-                  <p className="text-primary italic">María González</p>
-                  <p className="text-sm text-gray-500">Fundadora y CEO</p>
-                </div>
+              <div className="mx-auto text-center max-w-2xl px-4 md:px-8">
+                <p className="text-xl text-gray-600 mb-4 font-helvetica">
+                  En Habitahub, nos dedicamos a crear experiencias memorables para nuestros huéspedes. Cada detalle está cuidadosamente pensado para ofrecerte el máximo confort y lujo.
+                </p>
+                <p className="text-gray-600 mb-6 font-helvetica text-xl">
+                  Nuestro equipo está comprometido con la excelencia en el servicio, asegurando que cada momento de tu estancia sea perfecto. Desde la decoración hasta la gastronomía, todo está diseñado para superar tus expectativas.
+                </p>
               </div>
+
             </motion.div>
           </div>
         </div>

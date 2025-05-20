@@ -23,13 +23,15 @@ import StoreInitializer from '../../components/common/StoreInitializer';
       </div>
 
       <!-- Hero Content -->
-      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16 text-center">
-        <h1 class="text-4xl font-bold text-white mb-4">Bienvenido a tu Cuenta</h1>
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 text-center overflow-hidden">
+        <h1 class="overflow-hidden">
+          <span class="font-lorise-sans text-white text-7xl">Bienvenido a tu </span>
+          <span class="font-lorise-hand  text-8xl text-primary">Cuenta</span>
+        </h1>
         <p class="text-xl text-white/90 max-w-2xl mx-auto">
           Gestiona tus reservas, actualiza tu perfil y mantén al día tus preferencias
         </p>
       </div>
-    </div>
 
     <!-- Main Content -->
     <div class="mt-16 md:mt-24">
@@ -38,9 +40,8 @@ import StoreInitializer from '../../components/common/StoreInitializer';
   </main>
 </Layout>
 
-<style is:global>
-  body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background-color: #f9fafb;
+<style>
+  :global(body) {
+    font-family: Helvetica;
   }
 </style> 

@@ -1,0 +1,11 @@
+/* Webfont: Alcantera-SerifSS */@font-face {
+    font-family: 'AlcanteraSerifSS';
+    src: url('Alcantera-SerifSS.eot'); /* IE9 Compat Modes */
+    src: url('Alcantera-SerifSS.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('Alcantera-SerifSS.woff') format('woff'), /* Modern Browsers */
+         url('Alcantera-SerifSS.ttf') format('truetype'); /* Safari, Android, iOS */
+             font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+

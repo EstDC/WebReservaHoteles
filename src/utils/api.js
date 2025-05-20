@@ -71,6 +71,7 @@ api.interceptors.response.use(
     console.log('API Response Interceptor');
     console.log('URL:', response.config.url);
     console.log('Status:', response.status);
+    console.log('Data tipo:', typeof response.data);
     console.log('Data:', response.data);
     console.log('Headers:', response.headers);
 
@@ -81,6 +82,16 @@ api.interceptors.response.use(
       setAuthHeader(token);
       console.log('Token guardado desde headers de respuesta');
     }
+
+        // Asegurar que response.data es un objeto si es JSON válido
+        if (typeof response.data === 'string' && response.headers['content-type']?.includes('application/json')) {
+          try {
+            response.data = JSON.parse(response.data);
+            console.log('Data parseado en interceptor:', response.data);
+          } catch (e) {
+            console.warn('Error parseando JSON en interceptor:', e);
+          }
+        }
 
     return response;
   },

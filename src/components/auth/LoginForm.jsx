@@ -29,12 +29,7 @@ const LoginForm = () => {
       const timer = setTimeout(() => {
         const params = new URLSearchParams(window.location.search);
         const redirectUrl = params.get('redirect') || '/account';
-        
-        // Usar navigate para una navegación más suave
-        const event = new CustomEvent('navigate', {
-          detail: { url: redirectUrl }
-        });
-        window.dispatchEvent(event);
+        window.location.href = redirectUrl;
       }, 1500);
 
       return () => clearTimeout(timer);
@@ -79,11 +74,11 @@ const LoginForm = () => {
     return (
       <div className="backdrop-blur-sm p-8 rounded-lg text-center">
         <div className="flex flex-col items-center space-y-4">
-          <FaCheckCircle className="w-16 h-16 text-green-500" />
+          <FaCheckCircle className="w-16 h-16 text-primary" />
           <h2 className="text-2xl font-semibold text-gray-900">
             ¡Bienvenido de nuevo!
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-600 font-helvetica">
             Has iniciado sesión correctamente. Redirigiendo...
           </p>
           <div className="w-8 h-8 border-t-2 border-b-2 border-primary rounded-full animate-spin"></div>
@@ -106,8 +101,8 @@ const LoginForm = () => {
       )}
 
       <div className="mb-6">
-        <label htmlFor="email" className="block text-sm font-medium text-gray-900 mb-2">
-          {t('auth.email')}
+        <label htmlFor="email" className="block text-sm  text-gray-900 mb-2 font-helvetica">
+          {t('Correo electrónico')}
         </label>
         <input
           type="email"
@@ -116,15 +111,15 @@ const LoginForm = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full px-4 py-3 bg-white/20 border border-gray-300 text-gray-900 placeholder-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent backdrop-blur-sm"
+          className="w-full px-4 py-3 bg-white/20 border border-gray-300 text-gray-900 font-helvetica placeholder-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent backdrop-blur-sm"
           placeholder="tu@email.com"
           disabled={loading}
         />
       </div>
 
       <div className="mb-6">
-        <label htmlFor="password" className="block text-sm font-medium text-gray-900 mb-2">
-          {t('auth.password')}
+        <label htmlFor="password" className="block text-sm font-helvetica text-gray-900 mb-2">
+          {t('Contraseña')}
         </label>
         <input
           type="password"
@@ -133,7 +128,7 @@ const LoginForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="w-full px-4 py-3 bg-white/20 border border-gray-300 text-gray-900 placeholder-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent backdrop-blur-sm"
+          className="w-full px-4 py-3 bg-white/20 border border-gray-300 text-gray-900 font-helvetica placeholder-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent backdrop-blur-sm"
           placeholder="••••••••"
           disabled={loading}
         />
@@ -142,9 +137,9 @@ const LoginForm = () => {
       <div className="flex items-center justify-between mb-6">
         <a
           href="/auth/recover-password"
-          className="text-sm text-gray-900 hover:text-primary transition-colors"
+          className="text-sm text-gray-900 hover:text-primary transition-colors font-helvetica"
         >
-          {t('auth.forgotPassword')}
+          {t('He olvidado mi contraseña')}
         </a>
       </div>
 
@@ -155,25 +150,14 @@ const LoginForm = () => {
       >
         {loading ? (
           <div className="flex items-center justify-center">
-            <div className="w-5 h-5 border-t-2 border-b-2 border-white rounded-full animate-spin mr-2"></div>
+            <div className="w-5 h-5 border-t-2 border-b-2 border-white rounded-full animate-spin mr-2 font-helvetica"></div>
             {t('common.loading')}
           </div>
         ) : (
-          t('auth.login')
+          t('Iniciar sesión')
         )}
       </button>
 
-      <div className="mt-6 text-center">
-        <p className="text-sm text-gray-900">
-          {t('auth.noAccount')}{' '}
-          <a
-            href="/auth/register"
-            className="text-primary hover:text-primary/90 transition-colors"
-          >
-            {t('auth.register')}
-          </a>
-        </p>
-      </div>
     </form>
   );
 };

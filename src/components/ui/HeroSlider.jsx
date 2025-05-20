@@ -4,26 +4,35 @@ import { motion, AnimatePresence } from 'framer-motion';
 const slides = [
   {
     category: 'Verano / Inspiración',
-    title: 'EL VERANO A UN PASO DE TI',
+    title: {
+      first: 'El verano a un',
+      second: 'paso de ti'
+    },
     subtitle: 'Para los que buscan algo diferente',
-    leftImage: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
-    rightImage: '/images/img/portugal1.jpg',
+    leftImage: '/images/img/shutterstock_19540719667.jpg',
+    rightImage: '/images/img/6819717f0791d11ac2d86065_2D1A2199LR.jpg',
     footer: 'Para: HotelFinder',
   },
   {
     category: 'Aventura / Naturaleza',
-    title: 'VE EL MUNDO DE OTRA MANERA',
+    title: {
+      first: 'Ve el mundo de',
+      second: 'otra manera'
+    },
     subtitle: 'Descubre destinos únicos',
-    leftImage: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=600&q=80',
-    rightImage: '/images/img/portugal2.jpg',
+    leftImage: '/images/img/07626.jpg',
+    rightImage: '/images/img/AdobeStock_408810925-1500x1000.jpeg',
     footer: 'Para: HotelFinder',
   },
   {
     category: 'Lujo / Relax',
-    title: 'TU ESCAPADA PERFECTA',
+    title: {
+      first: 'Tu escapada',
+      second: 'perfecta'
+    },
     subtitle: 'Hoteles seleccionados para ti',
-    leftImage: 'https://images.unsplash.com/photo-1465101178521-c1a9136a3b99?auto=format&fit=crop&w=600&q=80',
-    rightImage: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1200&q=80',
+    leftImage: '/images/img/boat1.jpg',
+    rightImage: '/images/img/BNE Airport_Travelling with a group_Choose the right travel companions_Image by Shutterstock_MAIN.jpg',
     footer: 'Para: HotelFinder',
   },
 ];
@@ -80,32 +89,7 @@ export function SliderRelleno() {
   const nextSlide = useCallback(() => goTo((current + 1) % slides.length, 1), [current, goTo]);
   const prevSlide = useCallback(() => goTo((current - 1 + slides.length) % slides.length, -1), [current, goTo]);
 
-  // Soporte para la rueda del ratón
-  useEffect(() => {
-    const handleWheel = (e) => {
-      if (wheelLock) return;
-      setWheelLock(true);
-      setHovering(true); // Pausa autoplay
-      if (e.deltaY > 0) {
-        nextSlide();
-      } else if (e.deltaY < 0) {
-        prevSlide();
-      }
-      clearTimeout(wheelTimeoutRef.current);
-      wheelTimeoutRef.current = setTimeout(() => {
-        setWheelLock(false);
-        setHovering(false); // Reanuda autoplay
-      }, 800);
-    };
-    const slider = sliderRef.current;
-    if (slider) {
-      slider.addEventListener('wheel', handleWheel, { passive: false });
-    }
-    return () => {
-      if (slider) slider.removeEventListener('wheel', handleWheel);
-    };
-  }, [nextSlide, prevSlide, wheelLock]);
-
+  
   // Índices sincronizados e invertidos
   const leftIndex = slides.length - 1 - current;
   const rightIndex = current;
@@ -113,7 +97,7 @@ export function SliderRelleno() {
   return (
     <div
       ref={sliderRef}
-      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden mb-8 bg-gray-50"
+      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden mb-8 bg-[#f4a574]"
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
     >
@@ -126,7 +110,7 @@ export function SliderRelleno() {
               <button
                 key={idx}
                 onClick={() => goTo(idx, idx > current ? 1 : -1)}
-                className={`w-3 h-3 rounded-full border border-black ${idx === current ? 'bg-black' : 'bg-white'}`}
+                className={`w-5 h-5 flex items-center justify-center rounded-full border-2 border-black transition-colors duration-200 ${idx === current ? 'bg-black border-black ring-2 ring-black' : 'bg-transparent border-black'}`}
                 aria-label={`Ir a la diapositiva ${idx + 1}`}
               />
             ))}
@@ -152,6 +136,8 @@ export function SliderRelleno() {
                       style={{ borderRadius: '0.5rem', overflow: 'hidden' }}
                     >
                       <img src={slides[leftIndex].leftImage} alt="" className="w-full h-full object-cover group-hover:brightness-75 transition duration-300" />
+                      {/* Overlay con degradado */}
+                      <div className="absolute inset-0 bg-gradient-to-l from-black/40 to-transparent" />
                       {/* Overlay + animación + */}
                       <motion.div
                         variants={plusVariants}
@@ -183,18 +169,18 @@ export function SliderRelleno() {
                     exit={{ opacity: 0, x: 160, transition: { duration: TEXT_ANIMATION_DURATION, ease: [0.8, 0, 0.2, 1] } }}
                     className="absolute z-10 right-0 bottom-[25%] -translate-y-1/2 w-96 aspect-square flex items-center justify-center"
                   >
-                    <motion.h2
-                      className="font-serif font-black text-4xl md:text-5xl leading-tight text-black break-words text-center"
-                      style={{ letterSpacing: '-0.05em', textShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
-                    >
-                      {slides[leftIndex].title}
-                      <motion.span
-                        className="block h-1 w-full bg-yellow-400 absolute left-0 bottom-0 origin-left"
-                        variants={underlineVariants}
-                        initial="initial"
-                        whileHover="hover"
-                      />
-                    </motion.h2>
+                    <div className="relative">
+                      <motion.h2
+                        className="font-lorise-sans text-9xl md:text-8xl leading-tight text-white break-words text-center relative z-10"
+                        style={{ letterSpacing: '-0.05em', transform: 'translateX(-20px)' }}
+                      >
+                        {slides[leftIndex].title.first}
+                      </motion.h2>
+                      <motion.h2
+                        className="font-alcantera-script text-9xl md:text-9xl leading-tight text-white break-words text-center -mt-8 md:-mt-12 relative z-20 transform translate-x-12 md:translate-x-16">
+                        {slides[leftIndex].title.second}
+                      </motion.h2>
+                    </div>
                   </motion.div>
                 </div>
               </motion.div>
@@ -223,18 +209,49 @@ export function SliderRelleno() {
       {/* Controles */}
       <button
         onClick={prevSlide}
-        className="absolute left-16 bottom-8 bg-white/80 hover:bg-white rounded-full p-2 shadow z-20"
+        className="absolute left-16 bottom-8 w-12 h-12 rounded-full border-2 border-black flex items-center justify-center text-2xl bg-transparent hover:bg-black hover:text-white transition z-20"
         aria-label="Anterior"
       >
-        <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
       </button>
       <button
         onClick={nextSlide}
-        className="absolute left-32 bottom-8 bg-white/80 hover:bg-white rounded-full p-2 shadow z-20"
+        className="absolute left-32 bottom-8 w-12 h-12 rounded-full border-2 border-black flex items-center justify-center text-2xl bg-transparent hover:bg-black hover:text-white transition z-20"
         aria-label="Siguiente"
       >
-        <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
       </button>
+    </div>
+  );
+}
+
+export default function HeroSlider() {
+  return (
+    <div className="bg-[#f4a574] w-full py-12">
+      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
+        <div>
+          <p className="font-semibold text-lg uppercase mb-2">NUESTROS DESTINOS</p>
+          <h1 className="font-bold text-5xl md:text-6xl mb-6 leading-tight">
+            Encuéntranos en todo el<br />Reino Unido y Europa
+          </h1>
+          <div className="flex items-center mt-4">
+            <button className="w-12 h-12 rounded-full border-2 border-black flex items-center justify-center text-2xl mr-2 bg-transparent hover:bg-black hover:text-white transition">
+              &#8592;
+            </button>
+            <button className="w-12 h-12 rounded-full border-2 border-black flex items-center justify-center text-2xl bg-transparent hover:bg-black hover:text-white transition">
+              &#8594;
+            </button>
+            <span className="ml-4 text-base">*Ver todos</span>
+          </div>
+        </div>
+        <div className="mt-8 md:mt-0 md:ml-8 flex flex-col items-end">
+          <img src="/images/hotels/menorca/94167_1720150068.jpg" alt="Menorca" className="rounded-xl w-72 h-96 object-cover" />
+          <div className="mt-2 text-right">
+            <p className="font-bold text-lg">Menorca</p>
+            <p className="uppercase text-sm text-gray-700">ESPAÑA</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 } 

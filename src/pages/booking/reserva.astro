@@ -1,7 +1,7 @@
 ---
+import Layout from '../../layouts/Layout.astro';
 import ReservaForm from '../../components/booking/ReservaForm.jsx';
 import Header from '../../components/layout/Header.jsx';
-import Footer from '../../components/layout/Footer.jsx';
 import HeroHabitacionReserva from '../../components/booking/HeroHabitacionReserva';
 import ReservaStepper from '../../components/booking/ReservaStepper';
 
@@ -27,17 +27,17 @@ if (roomId) {
   }
 }
 ---
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <title>Reserva de habitación</title>
-  </head>
-  <body>
-    <Header client:load />
-     {habitacion && <HeroHabitacionReserva habitacion={habitacion} />}
-    <main class="p-0 m-0">
-      <ReservaStepper habitacionId={roomId} client:load />
-    </main>
-    <Footer client:load />
-  </body>
-</html> 
+
+<Layout title="Reserva de habitación">
+  <Header transparent client:load />
+  {habitacion && <HeroHabitacionReserva habitacion={habitacion} />}
+  <main class="p-0 m-0">
+    <ReservaStepper habitacionId={roomId} client:load />
+  </main>
+</Layout>
+
+<style>
+  :global(body) {
+    font-family: Helvetica;
+  }
+</style> 

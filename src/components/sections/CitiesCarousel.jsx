@@ -96,10 +96,18 @@ const CitiesCarousel = () => {
           {/* Título y flechas */}
           <div className="lg:w-[45%] w-full flex flex-col justify-between gap-8 mb-8 lg:mb-0">
             <div>
-              <p className="uppercase text-[#3d2c1e] text-lg font-semibold mb-2">Nuestros destinos</p>
-              <h2 className="text-4xl md:text-5xl font-bold text-[#2d2320] mb-8 leading-tight">
-                Encuéntranos en todo el Reino Unido y Europa
+            <div className="mb-6 relative">
+              <p className="text-white text-7xl font-alcantera-script mb-2 relative z-10">
+                Nuestros destinos
+              </p>
+              <h2
+                className="text-6xl md:text-8xl text-[#2d2320] mb-8 leading-tight font-lorise-sans
+                  -mt-8 md:-mt-12 mx-auto text-center relative z-20"
+                style={{ letterSpacing: '-0.03em' }}
+              >
+                Encuéntranos en toda Europa
               </h2>
+            </div>
             </div>
             <div className="hidden lg:flex items-center gap-4">
               <button
@@ -118,7 +126,7 @@ const CitiesCarousel = () => {
               </button>
               <a 
                 href="/hotels" 
-                className="text-[#3d2c1e] hover:text-[#2d2320] transition-colors font-medium ml-4"
+                className="text-[#3d2c1e] hover:text-[#2d2320] transition-colors font-helvetica ml-4"
               >
                 *Ver todos
               </a>

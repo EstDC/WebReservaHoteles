@@ -7,6 +7,7 @@ const RegisterForm = () => {
   const { register } = useHotelStore();
   const [formData, setFormData] = useState({
     name: '',
+    surname: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -61,6 +62,21 @@ const RegisterForm = () => {
           id="name"
           name="name"
           value={formData.name}
+          onChange={handleChange}
+          required
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+      </div>
+
+      <div className="mb-4">
+        <label htmlFor="surname" className="block text-sm font-medium text-gray-700 mb-1">
+          {t('auth.surname')}
+        </label>
+        <input
+          type="text"
+          id="surname"
+          name="surname"
+          value={formData.surname}
           onChange={handleChange}
           required
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"

@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { useHotelStore } from '../../stores/hotelStore';
 import { FaUser, FaHistory, FaCreditCard, FaCog, FaSignOutAlt } from 'react-icons/fa';
 import BookingList from './BookingList';
+import PaymentMethods from './PaymentMethods';
 import api from '../../utils/api';
+import HistorialReservas from './HistorialReservas';
 
 const AccountLayout = () => {
   const { user, logout, initialize, updateUser, token } = useHotelStore();
@@ -319,7 +321,10 @@ const AccountLayout = () => {
       <div className="flex-1 p-4 md:p-8 flex flex-col justify-start min-h-[80vh] md:min-h-[600px] mt-16">
         {activeTab === 'profile' && (
           <div>
-            <h3 className="text-2xl font-semibold mb-6">Mi Perfil</h3>
+            <div class="relative mb-12">
+              <h2 class="font-alcantera-script text-7xl text-primary relative z-10">Mi</h2>
+              <h2 class="font-lorise-sans text-5xl text-gray-900 relative z-10 -mt-10 transform translate-x-7">Perfil</h2>
+            </div>
             {profileSuccess && (
               <div className="mb-6 p-4 bg-green-50 text-green-700 rounded-lg">
                 Perfil actualizado correctamente
@@ -418,7 +423,10 @@ const AccountLayout = () => {
 
         {activeTab === 'bookings' && (
           <div>
-            <h3 className="text-2xl font-semibold mb-6">Mis Reservas</h3>
+            <div class="relative mb-12">
+              <h2 class="font-alcantera-script text-7xl text-primary relative z-10">Mis</h2>
+              <h2 class="font-lorise-sans text-5xl text-gray-900 relative z-10 -mt-10 transform translate-x-7">Reservas</h2>
+            </div>
             {loadingBookings ? (
               <div className="flex items-center justify-center min-h-[200px]">
                 <div className="w-8 h-8 border-t-2 border-b-2 border-primary rounded-full animate-spin"></div>
@@ -452,17 +460,20 @@ const AccountLayout = () => {
 
         {activeTab === 'payment' && (
           <div>
-            <h3 className="text-2xl font-semibold mb-6">Métodos de Pago</h3>
-            <div className="bg-gray-50 rounded-lg p-8 text-center">
-              <FaCreditCard className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">No tienes métodos de pago guardados</p>
+            <div class="relative mb-12">
+              <h2 class="font-alcantera-script text-7xl text-primary relative z-10">Métodos</h2>
+              <h2 class="font-lorise-sans text-5xl text-gray-900 relative z-10 -mt-10 transform translate-x-7">de pago</h2>
             </div>
+            <PaymentMethods />
           </div>
         )}
 
         {activeTab === 'settings' && (
           <div>
-            <h3 className="text-2xl font-semibold mb-6">Configuración</h3>
+            <div class="relative mb-12">
+              <h2 class="font-alcantera-script text-7xl text-primary relative z-10">Mi</h2>
+              <h2 class="font-lorise-sans text-5xl text-gray-900 relative z-10 -mt-10 transform translate-x-7">configuración</h2>
+            </div>
             <form className="space-y-6" onSubmit={async (e) => {
               e.preventDefault();
               setPasswordError('');
@@ -551,6 +562,45 @@ const AccountLayout = () => {
                 </button>
               </div>
             </form>
+
+            {/* Sección de darse de baja */}
+            <div className="mt-8 pt-8 border-t border-gray-200">
+              <div class="relative mb-12">
+                <h2 class="font-lorise-sans text-5xl text-gray-900  relative z-10">Zona de</h2>
+                <h2 class="font-alcantera-script text-7xl text-red-600 relative z-10 -mt-6 transform translate-x-16">Peligro</h2>
+              </div>
+              <p className="text-gray-600 mb-4">
+                Al darte de baja, tu cuenta se marcará como inactiva. Podrás volver a activarla en cualquier momento contactando con soporte.
+              </p>
+              <button
+                onClick={async () => {
+                  if (!window.confirm('¿Estás seguro de que deseas darte de baja? Podrás volver a activar tu cuenta contactando con soporte.')) {
+                    return;
+                  }
+                  try {
+                    await api.delete(`/usuarios/${user.id}`);
+                    await logout();
+                    const event = new CustomEvent('navigate', {
+                      detail: { url: '/' }
+                    });
+                    window.dispatchEvent(event);
+                  } catch (error) {
+                    console.error('Error al darse de baja:', error);
+                    setError('Error al darse de baja. Por favor, intenta de nuevo más tarde.');
+                  }
+                }}
+                className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Darse de Baja
+              </button>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'history' && (
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Historial de Reservas</h2>
+            <HistorialReservas />
           </div>
         )}
       </div>

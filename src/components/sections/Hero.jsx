@@ -1,32 +1,17 @@
 import { useState } from 'react';
-import { useHotelStore } from '../../stores/hotelStore';
 
 const Hero = () => {
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [adults, setAdults] = useState(1);
-  const [children, setChildren] = useState(0);
+  const [fechaInicio, setFechaInicio] = useState('');
+  const [fechaFin, setFechaFin] = useState('');
 
   const handleSearch = (e) => {
     e.preventDefault();
-    const user = useHotelStore.getState().user;
-    if (!user) {
-      const searchParams = new URLSearchParams({
-        startDate,
-        endDate,
-        adults,
-        children
-      });
-      window.location.href = `/auth/login?redirect=/search?${searchParams.toString()}`;
-    } else {
-      const searchParams = new URLSearchParams({
-        startDate,
-        endDate,
-        adults,
-        children
-      });
-      window.location.href = `/search?${searchParams.toString()}`;
-    }
+    if (!fechaInicio || !fechaFin) return;
+    const searchParams = new URLSearchParams({
+      fechaInicio,
+      fechaFin
+    });
+    window.location.href = `/search?${searchParams.toString()}`;
   };
 
   return (
@@ -49,87 +34,41 @@ const Hero = () => {
       {/* Content */}
       <div className="relative z-10 h-full flex items-center justify-center text-center text-white">
         <div className="container mx-auto px-4">
-          <small className="block text-lg mb-4 animate-slideInUp">Luxury Hotel Experience</small>
-          <h1 className="text-4xl md:text-6xl font-caveat mb-8 animate-slideInUp">
-            A unique Experience<br />where to stay
+          <h1 className="text-5xl md:text-7xl font-lorise-sans mb-8 animate-slideInUp">
+            Una experiencia <span className="font-lorise-hand text-primary font-bold text-9xl">única</span><br />donde alojarse
           </h1>
 
           {/* Booking Form */}
-          <div className="max-w-4xl mx-auto bg-white/10 backdrop-blur-sm p-6 rounded-lg">
-            <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="relative">
+          <div className="max-w-md mx-auto bg-white/10 backdrop-blur-sm p-6 rounded-lg">
+            <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-helvetica text-white mb-1">Fecha de inicio</label>
                 <input
                   type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
+                  value={fechaInicio}
+                  onChange={e => setFechaInicio(e.target.value)}
                   className="w-full p-3 rounded-lg bg-white/20 text-white placeholder-white/70"
-                  placeholder="Check in"
                   required
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-helvetica text-white mb-1">Fecha de fin</label>
                 <input
                   type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="w-full p-3 rounded-lg bg-white/20 text-white placeholder-white/70 mt-2"
-                  placeholder="Check out"
+                  value={fechaFin}
+                  onChange={e => setFechaFin(e.target.value)}
+                  className="w-full p-3 rounded-lg bg-white/20 text-white placeholder-white/70"
                   required
                 />
               </div>
-              
-              <div className="flex items-center space-x-2 bg-white/20 p-3 rounded-lg">
+              <div className="md:col-span-2">
                 <button
-                  type="button"
-                  onClick={() => setAdults(Math.max(1, adults - 1))}
-                  className="text-white"
+                  type="submit"
+                  className="w-full bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors font-helvetica"
                 >
-                  -
+                  Buscar
                 </button>
-                <input
-                  type="text"
-                  value={adults}
-                  readOnly
-                  className="w-8 text-center bg-transparent text-white"
-                />
-                <button
-                  type="button"
-                  onClick={() => setAdults(adults + 1)}
-                  className="text-white"
-                >
-                  +
-                </button>
-                <span className="text-white">Adults</span>
               </div>
-
-              <div className="flex items-center space-x-2 bg-white/20 p-3 rounded-lg">
-                <button
-                  type="button"
-                  onClick={() => setChildren(Math.max(0, children - 1))}
-                  className="text-white"
-                >
-                  -
-                </button>
-                <input
-                  type="text"
-                  value={children}
-                  readOnly
-                  className="w-8 text-center bg-transparent text-white"
-                />
-                <button
-                  type="button"
-                  onClick={() => setChildren(children + 1)}
-                  className="text-white"
-                >
-                  +
-                </button>
-                <span className="text-white">Children</span>
-              </div>
-
-              <button
-                type="submit"
-                className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
-              >
-                Search
-              </button>
             </form>
           </div>
 

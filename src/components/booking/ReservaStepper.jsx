@@ -3,6 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ExtrasModal from './ExtrasModal';
 import api from '../../utils/api';
+import { useHotelStore } from '../../stores/hotelStore';
 
 const steps = [
   { key: 'fechas', label: 'busca tus fecha', color: 'bg-primary', text: 'text-white' },
@@ -11,9 +12,9 @@ const steps = [
 ];
 
 const drawerBackgrounds = {
-    fechas: "url('/images/img/GettyImages-1322424997.jpg')",
-    extras: "url('/images/img/heidelberg-heidelberg-main-gallery-67.webp')",
-    resumen: "url('/images/img/SieteLugares_Italia_03.jpg')"
+    fechas: "",
+    //extras: "url('/images/img/heidelberg-heidelberg-main-gallery-67.webp')",
+    resumen: ""
 };
 
 const ReservaStepper = ({ habitacionId, onReservaCompletada }) => {
@@ -28,6 +29,8 @@ const ReservaStepper = ({ habitacionId, onReservaCompletada }) => {
   const [extrasSeleccionados, setExtrasSeleccionados] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const user = useHotelStore(state => state.user);
+  const setCurrentReservaId = useHotelStore(state => state.setCurrentReservaId);
 
   // Fetch de datos
   useEffect(() => {
@@ -58,6 +61,20 @@ const ReservaStepper = ({ habitacionId, onReservaCompletada }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Calcular noches y totales
+      const noches = fechaEntrada && fechaSalida ? 
+        Math.ceil((fechaSalida - fechaEntrada) / (1000 * 60 * 60 * 24)) : 0;
+      const precioHabitacion = habitacion?.precioPorNoche || 0;
+      const totalHabitacion = noches * precioHabitacion;
+      const totalExtras = Object.entries(extrasSeleccionados)
+        .filter(([id, checked]) => checked)
+        .reduce((sum, [id]) => {
+          const extra = extras.find(e => e.id === parseInt(id));
+          return sum + (extra ? extra.precio : 0);
+        }, 0);
+      const totalGeneral = totalHabitacion + totalExtras;
+
+      // Construir reservaExtras SOLO con id del extra
       const reservaExtras = Object.entries(extrasSeleccionados)
         .filter(([id, checked]) => checked)
         .map(([extraId]) => {
@@ -68,16 +85,58 @@ const ReservaStepper = ({ habitacionId, onReservaCompletada }) => {
             precioUnitario: extra.precio
           };
         });
+
+      // Construir payload SOLO con ids
       const payload = {
-        habitacion: { id: habitacionId },
-        fechaEntrada: fechaEntrada ? fechaEntrada.toISOString().split('T')[0] : null,
-        fechaSalida: fechaSalida ? fechaSalida.toISOString().split('T')[0] : null,
+        usuario: { id: user.id },
+        habitacion: { id: habitacion.id },
+        fechaEntrada: fechaEntrada ? fechaEntrada.toISOString() : null,
+        fechaSalida: fechaSalida ? fechaSalida.toISOString() : null,
+        numeroHuespedes: habitacion?.capacidad || 1,
         reservaExtras,
+        precioTotal: totalGeneral,
+        estado: "PENDIENTE",
+        fechaCreacion: new Date().toISOString(),
+        fechaActualizacion: new Date().toISOString()
       };
-      await api.post('/reservas', payload);
+
+      // Capturar el response con el ID de la reserva
+      const response = await api.post('/reservas', payload);
+      
+      console.log('=== RESERVA STEPPER DEBUG ===');
+      console.log('Response completo:', response);
+      console.log('Response.data tipo:', typeof response.data);
+      console.log('Response.data:', response.data);
+      
+      // Asegurar que response.data es un objeto
+      let reservaCreada;
+      if (typeof response.data === 'string') {
+        reservaCreada = JSON.parse(response.data);
+        console.log('Data parseado como JSON:', reservaCreada);
+      } else {
+        reservaCreada = response.data;
+      }
+      
+      console.log('Reserva creada (final):', reservaCreada);
+      console.log('ID de reserva:', reservaCreada.id);
+      console.log('Tipo del ID:', typeof reservaCreada.id);
+      
+      // Guardar el ID en el store
+      setCurrentReservaId(reservaCreada.id);
+      console.log('ID guardado en store:', reservaCreada.id);
+      
+      // Verificar que se guardó
+      const storeState = useHotelStore.getState();
+      console.log('Estado actual del store:', storeState.currentReservaId);
+      
       if (onReservaCompletada) onReservaCompletada();
-      alert('¡Reserva realizada con éxito!');
+      
+      // Redirigir a página de pago con el ID de la reserva
+      console.log('Redirigiendo a:', `/pago/${reservaCreada.id}`);
+      console.log('===========================');
+      window.location.href = `/pago/${reservaCreada.id}`;
     } catch (err) {
+      console.error('Error en handleSubmit:', err);
       setError('Error al realizar la reserva');
     }
   };
@@ -205,6 +264,24 @@ const ReservaStepper = ({ habitacionId, onReservaCompletada }) => {
                       );
                     }
                     if (step.key === 'resumen') {
+                      // Calcular noches
+                      const noches = fechaEntrada && fechaSalida ? 
+                        Math.ceil((fechaSalida - fechaEntrada) / (1000 * 60 * 60 * 24)) : 0;
+                      
+                      // Calcular precio de habitación
+                      const precioHabitacion = habitacion?.precioPorNoche || 0;
+                      const totalHabitacion = noches * precioHabitacion;
+                      
+                      // Calcular extras
+                      const totalExtras = Object.entries(extrasSeleccionados)
+                        .filter(([id, checked]) => checked)
+                        .reduce((sum, [id]) => {
+                          const extra = extras.find(e => e.id === parseInt(id));
+                          return sum + (extra ? extra.precio : 0);
+                        }, 0);
+                      
+                      const totalGeneral = totalHabitacion + totalExtras;
+
                       return (
                         <form onSubmit={handleSubmit}>
                           <div className="uppercase text-xs text-gray-600 font-semibold mb-4 tracking-widest">RESUMEN</div>
@@ -216,6 +293,15 @@ const ReservaStepper = ({ habitacionId, onReservaCompletada }) => {
                           </div>
                           <div className="mb-2">
                             <span className="font-semibold">Salida:</span> {fechaSalida ? fechaSalida.toLocaleDateString() : '-'}
+                          </div>
+                          <div className="mb-2">
+                            <span className="font-semibold">Noches:</span> {noches}
+                          </div>
+                          <div className="mb-2">
+                            <span className="font-semibold">Precio por noche:</span> {precioHabitacion.toFixed(2)} €
+                          </div>
+                          <div className="mb-2">
+                            <span className="font-semibold">Subtotal habitación:</span> {totalHabitacion.toFixed(2)} €
                           </div>
                           <div className="mb-2">
                             <span className="font-semibold">Extras:</span>
@@ -233,12 +319,10 @@ const ReservaStepper = ({ habitacionId, onReservaCompletada }) => {
                             </ul>
                           </div>
                           <div className="font-bold mt-2 text-lg">
-                            Total extras: {Object.entries(extrasSeleccionados)
-                              .filter(([id, checked]) => checked)
-                              .reduce((sum, [id]) => {
-                                const extra = extras.find(e => e.id === parseInt(id));
-                                return sum + (extra ? extra.precio : 0);
-                              }, 0).toFixed(2)} €
+                            Total extras: {totalExtras.toFixed(2)} €
+                          </div>
+                          <div className="font-bold mt-2 text-xl border-t pt-2">
+                            Total general: {totalGeneral.toFixed(2)} €
                           </div>
                           <button
                             type="submit"

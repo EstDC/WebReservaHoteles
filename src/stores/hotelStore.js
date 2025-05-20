@@ -27,6 +27,9 @@ const useHotelStore = create(
       loading: false,
       error: null,
 
+      // Estado de reserva
+      currentReservaId: null,
+
       // Autenticación
       login: async (credentials) => {
         try {
@@ -70,6 +73,30 @@ const useHotelStore = create(
         }
       },
 
+      register: async (userData) => {
+        try {
+          saveLog('Iniciando proceso de registro');
+          saveLog('Enviando datos de registro', userData);
+          
+          const response = await api.post('/usuarios/registro', {
+            nombre: userData.name,
+            apellido: userData.surname || '',
+            email: userData.email,
+            password: userData.password,
+            telefono: userData.phone,
+            rol: 'CLIENTE'
+          });
+          
+          saveLog('Registro exitoso', response.data);
+          return response.data;
+        } catch (error) {
+          console.error('Error en registro:', error);
+          saveLog('Error en registro', error.message);
+          set({ error: error.message });
+          throw error;
+        }
+      },
+
       logout: () => {
         if (typeof window !== 'undefined') {
           localStorage.removeItem('token');
@@ -80,7 +107,8 @@ const useHotelStore = create(
           user: null, 
           token: null, 
           isInitialized: true,
-          error: null 
+          error: null,
+          currentReservaId: null  // Limpiar también la reserva al logout
         });
       },
 
@@ -159,13 +187,20 @@ const useHotelStore = create(
       },
 
       // Gestión de hoteles
-      fetchHotels: async (filters = {}) => {
+      filters: {},
+      setFilters: (filters) => set({ filters }),
+      fetchHotels: async (filters = null) => {
+        set({ loading: true, error: null });
         try {
-          set({ loading: true, error: null });
-          const params = Object.fromEntries(
-            Object.entries(filters).filter(([_, v]) => v !== '' && v !== null && v !== undefined)
-          );
-          const { data } = await api.get('/hoteles', { params });
+          // Convertir los filtros a los nombres que espera el backend
+          const params = {};
+          if (filters) {
+            if (filters.nombre) params.nombre = filters.nombre;
+            if (filters.ciudad) params.ciudad = filters.ciudad;
+            if (filters.estrellas) params.estrellas = filters.estrellas;
+          }
+          console.log('Enviando filtros al backend:', params);
+          const { data } = await api.get('/hoteles/buscar', { params });
           set({ 
             hotels: Array.isArray(data) ? data : data.content || [], 
             loading: false,
@@ -196,6 +231,15 @@ const useHotelStore = create(
       },
 
       setSelectedHotel: (hotel) => set({ selectedHotel: hotel }),
+
+      // Gestión de reservas
+      setCurrentReservaId: (reservaId) => {
+        console.log('Store: setCurrentReservaId llamado con:', reservaId);
+        set({ currentReservaId: reservaId });
+        console.log('Store: ID guardado, estado actual:', get().currentReservaId);
+      },
+      getCurrentReservaId: () => get().currentReservaId,
+      clearCurrentReservaId: () => set({ currentReservaId: null }),
 
       // Configuración de la aplicación
       language: 'es',
@@ -233,7 +277,8 @@ const useHotelStore = create(
         language: state.language,
         currency: state.currency,
         hotels: state.hotels,
-        selectedHotel: state.selectedHotel
+        selectedHotel: state.selectedHotel,
+        currentReservaId: state.currentReservaId
       })
     }
   )

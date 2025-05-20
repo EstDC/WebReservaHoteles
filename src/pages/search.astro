@@ -1,0 +1,37 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/layout/Header.jsx';
+import HabitacionList from '../components/habitacion/HabitacionList.jsx';
+import HabitacionFilters from '../components/habitacion/HabitacionFilters.jsx';
+import HabitacionHeroSlider from '../components/habitacion/HabitacionHeroSlider.jsx';
+import HotelsVideoSection from '../components/sections/HotelsVideoSection.jsx';
+
+---
+
+<Layout title="Buscar habitaciones - HotelFinder">
+  <Header transparent client:load />
+  <main class="p-0 m-0">
+    <div class="bg-white">
+      <HabitacionHeroSlider client:load />
+    </div>
+    <div class="w-full flex flex-col lg:flex-row">
+      {/* Sidebar con filtros */}
+      <aside class="w-full lg:w-80">
+        <HabitacionFilters client:only="react" />
+      </aside>
+      {/* Contenido principal */}
+      <div class="flex-1 flex justify-center">
+        <div class="max-w-7xl w-full py-8 px-4">
+          <HabitacionList client:only="react" />
+        </div>
+      </div>
+    </div>
+    <HotelsVideoSection client:load />
+  </main>
+</Layout>
+
+<style>
+  :global(body) {
+    font-family: Helvetica;
+  }
+</style> 

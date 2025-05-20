@@ -1,29 +1,101 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaHotel, FaCalendarAlt, FaBed, FaTag, FaTimes, FaUsers, FaHistory } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import api from '../../utils/api';
 
 const BookingList = ({ bookings }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('active');
   const [cancellingId, setCancellingId] = useState(null);
+  const [bookingsState, setBookingsState] = useState(bookings);
+  const [hotelNames, setHotelNames] = useState({});
+  // const [tiposPago, setTiposPago] = useState({});
+
+  useEffect(() => {
+    setBookingsState(bookings);
+  }, [bookings]);
+
+  // Obtener nombres de hotel para cada habitación
+  useEffect(() => {
+    const fetchHotelNames = async () => {
+      const ids = bookings
+        .map(b => b.habitacion?.id)
+        .filter((id, idx, arr) => id && arr.indexOf(id) === idx);
+      const newHotelNames = { ...hotelNames };
+      for (const id of ids) {
+        if (!newHotelNames[id]) {
+          try {
+            const res = await api.get(`/habitaciones/${id}`);
+            newHotelNames[id] = res.data.hotel?.nombre || 'Hotel';
+          } catch {
+            newHotelNames[id] = 'Hotel';
+          }
+        }
+      }
+      setHotelNames(newHotelNames);
+    };
+    if (bookings.length) fetchHotelNames();
+    // eslint-disable-next-line
+  }, [bookings]);
+
+  // Obtener tipos de pago para cada reserva (comentado temporalmente)
+  /*
+  useEffect(() => {
+    const fetchTiposPago = async () => {
+      const ids = bookings
+        .map(b => b.id)
+        .filter((id, idx, arr) => id && arr.indexOf(id) === idx);
+      const newTiposPago = { ...tiposPago };
+      for (const id of ids) {
+        if (!newTiposPago[id]) {
+          try {
+            const res = await api.get(`/pagos/reserva/${id}`);
+            // Tomar el último pago si hay varios
+            const pagos = res.data;
+            if (pagos && pagos.length > 0) {
+              newTiposPago[id] = pagos[pagos.length - 1].metodoPago || 'N/A';
+            } else {
+              newTiposPago[id] = 'N/A';
+            }
+          } catch {
+            newTiposPago[id] = 'N/A';
+          }
+        }
+      }
+      setTiposPago(newTiposPago);
+    };
+    if (bookings.length) fetchTiposPago();
+    // eslint-disable-next-line
+  }, [bookings]);
+  */
+
+  // Función para convertir fechas en array o string a Date
+  const toDate = (fecha) => Array.isArray(fecha)
+    ? new Date(fecha[0], fecha[1] - 1, fecha[2], fecha[3] || 0, fecha[4] || 0, fecha[5] || 0, fecha[6] || 0)
+    : new Date(fecha);
 
   // Separar reservas activas y pasadas
   const now = new Date();
-  const activeBookings = bookings.filter(booking => new Date(booking.checkOut) > now && booking.status.toUpperCase() !== 'CANCELADA');
-  const pastBookings = bookings.filter(booking => new Date(booking.checkOut) <= now || booking.status.toUpperCase() === 'CANCELADA');
+  const activeBookings = bookingsState.filter(booking => toDate(booking.fechaSalida) > now && booking.estado.toUpperCase() !== 'CANCELADA');
+  const pastBookings = bookingsState.filter(booking => toDate(booking.fechaSalida) <= now || booking.estado.toUpperCase() === 'CANCELADA');
+
+  // Log de depuración
+  console.log('Bookings recibidos:', bookings);
+  console.log('Extras de las reservas:', bookings.map(b => ({
+    id: b.id,
+    extras: b.reservaExtras
+  })));
 
   const handleCancel = async (bookingId) => {
     setCancellingId(bookingId);
     try {
-      // TODO: Implementar llamada a la API para cancelar
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulación
+      await api.put(`/reservas/${bookingId}/cancelar`);
       // Actualizar el estado local
-      const updatedBookings = bookings.map(booking =>
+      setBookingsState(prev => prev.map(booking =>
         booking.id === bookingId
-          ? { ...booking, status: 'CANCELADA' }
+          ? { ...booking, estado: 'CANCELADA' }
           : booking
-      );
-      // TODO: Actualizar el estado en el componente padre
+      ));
     } catch (error) {
       console.error('Error al cancelar la reserva:', error);
     } finally {
@@ -31,8 +103,12 @@ const BookingList = ({ bookings }) => {
     }
   };
 
+  const handlePagar = (bookingId) => {
+    window.location.href = `/pago/${bookingId}`;
+  };
+
   const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('es-ES', {
+    return toDate(date).toLocaleDateString('es-ES', {
       day: 'numeric',
       month: 'long',
       year: 'numeric'
@@ -77,9 +153,9 @@ const BookingList = ({ bookings }) => {
   );
 
   const renderBookingCard = (booking) => {
-    const isActive = new Date(booking.checkOut) > now;
+    const isActive = toDate(booking.fechaSalida) > now;
     const isCancelling = cancellingId === booking.id;
-    const canCancel = isActive && booking.status.toUpperCase() === 'CONFIRMADA';
+    const canCancel = isActive && booking.estado.toUpperCase() === 'CONFIRMADA';
 
     return (
       <div key={booking.id} className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -89,32 +165,63 @@ const BookingList = ({ bookings }) => {
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
                 <FaHotel className="text-primary" />
-                <h3 className="text-lg font-semibold text-gray-900">{booking.hotelName}</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{hotelNames[booking.habitacion?.id] || 'Hotel'}</h3>
               </div>
               
               {/* Booking Details */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div className="flex items-center gap-2 text-gray-600">
                   <FaCalendarAlt />
-                  <span>{formatDate(booking.checkIn)} - {formatDate(booking.checkOut)}</span>
+                  <span>{formatDate(booking.fechaEntrada)} - {formatDate(booking.fechaSalida)}</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
                   <FaBed />
-                  <span>{booking.roomType}</span>
+                  <span>{booking.habitacion?.tipo || 'Tipo desconocido'}</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
                   <FaTag />
-                  <span>{booking.totalPrice}€</span>
+                  <span>{booking.precioTotal}€</span>
                 </div>
+                {/*
+                <div className="flex items-center gap-2 text-gray-600">
+                  <span className="font-medium">Tipo de pago:</span>
+                  <span>{tiposPago[booking.id] || 'Cargando...'}</span>
+                </div>
+                */}
               </div>
+              {/* Extras */}
+              {booking.reservaExtras && booking.reservaExtras.length > 0 && (
+                <div className="mt-4">
+                  <span className="font-medium text-gray-700">Extras:</span>
+                  <ul className="list-disc list-inside text-gray-600">
+                    {booking.reservaExtras.map((extra, idx) => (
+                      <li key={idx}>
+                        {extra.extra?.nombre || 'Extra'} x{extra.cantidad || 1} ({extra.precioTotal || extra.precioUnitario}€)
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {(!booking.reservaExtras || booking.reservaExtras.length === 0) && (
+                <div className="mt-4 text-gray-500 italic">
+                  No hay extras seleccionados
+                </div>
+              )}
             </div>
 
             {/* Status and Actions */}
             <div className="flex flex-col items-end gap-3">
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusBadgeClass(booking.status)}`}>
-                {getStatusText(booking.status)}
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusBadgeClass(booking.estado)}`}>
+                {getStatusText(booking.estado)}
               </span>
-              
+              {booking.estado === 'PENDIENTE' && (
+                <button
+                  onClick={() => handlePagar(booking.id)}
+                  className="flex items-center gap-2 px-4 py-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                >
+                  <FaHotel /> Pagar ahora
+                </button>
+              )}
               {canCancel && (
                 <button
                   onClick={() => handleCancel(booking.id)}

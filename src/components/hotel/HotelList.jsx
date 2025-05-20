@@ -34,7 +34,7 @@ function getCityFromHotelName(nombre) {
 
 const HotelList = () => {
   const { t } = useTranslation();
-  const { hotels, loading, error, fetchHotels } = useHotelStore();
+  const { hotels, loading, error, fetchHotels, filters } = useHotelStore();
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [imageErrors, setImageErrors] = useState({});
 
@@ -42,7 +42,7 @@ const HotelList = () => {
     const loadHotels = async () => {
       try {
         setIsInitialLoad(true);
-        await fetchHotels();
+        await fetchHotels(filters);
       } catch (err) {
         console.error('Error al cargar hoteles:', err);
       } finally {
@@ -50,7 +50,7 @@ const HotelList = () => {
       }
     };
     loadHotels();
-  }, [fetchHotels]);
+  }, [fetchHotels, filters]);
 
   const handleImageError = (hotelId) => {
     setImageErrors(prev => ({ ...prev, [hotelId]: true }));
@@ -70,7 +70,7 @@ const HotelList = () => {
         <p className="font-semibold">{t('common.error')}</p>
         <p>{error}</p>
         <button 
-          onClick={() => fetchHotels()} 
+          onClick={() => fetchHotels(filters)} 
           className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
         >
           {t('common.retry')}
@@ -84,7 +84,7 @@ const HotelList = () => {
       <div className="text-center text-gray-600 p-4">
         <p className="font-semibold">{t('hotels.noHotels')}</p>
         <button 
-          onClick={() => fetchHotels()} 
+          onClick={() => fetchHotels(filters)} 
           className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
         >
           {t('common.refresh')}
@@ -94,10 +94,13 @@ const HotelList = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">{t('hotels.title')}</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {hotels.map((hotel) => {
+    <div className="space-y-6 overflow-x-hidden">
+      <div className="text-left mb-12">
+            <h2 className="font-lorise-sans text-7xl text-gray-900 relative z-10">Hoteles</h2>
+            <h2 className="font-alcantera-script text-8xl text-[#f4a574] -mt-8 relative z-20 transform translate-x-12">Disponibles</h2>
+          </div>       
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto pb-8" style={{maxWidth: '1100px'}}>
+          {hotels.map((hotel) => {
           const ciudad = getCityFromHotelName(hotel.nombre);
           const imgSrc = !imageErrors[hotel.id] && ciudad && hotelImages[ciudad] 
             ? `/${hotelImages[ciudad]}` 
@@ -119,21 +122,23 @@ const HotelList = () => {
                 )}
               </div>
               <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-900">{hotel.nombre}</h3>
-                <p className="text-gray-600 mt-1">{hotel.ubicacion}</p>
+                <h3 className="text-lg font-semibold text-gray-900 font-helvetica">{hotel.nombre}</h3>
+                <p className="text-gray-600 mt-1 font-helvetica">{hotel.ubicacion}</p>
                 {hotel.pais && (
-                  <p className="text-gray-500 text-sm mt-1">{hotel.pais}</p>
+                  <p className="text-gray-500 text-sm mt-1 font-helvetica">{hotel.pais}</p>
                 )}
                 {hotel.estrellas && (
-                  <p className="text-yellow-500 text-sm mt-2">
-                    {Array.from({ length: hotel.estrellas }).map((_, i) => '★').join('')}
-                  </p>
+                  <div className="flex flex-row gap-1 mt-2">
+                    {Array.from({ length: hotel.estrellas }).map((_, i) => (
+                      <span key={i} className="text-yellow-500 text-sm">★</span>
+                    ))}
+                  </div>
                 )}
                 <a
                   href={`/hotels/${hotel.id}`}
-                  className="mt-4 w-full bg-primary text-white py-2 rounded-md hover:bg-primary/90 transition-colors duration-300 block text-center"
+                  className="mt-4 w-full bg-primary text-white py-2 rounded-md hover:bg-primary/90 transition-colors duration-300 block text-center font-helvetica"
                 >
-                  {t('hotels.viewDetails')}
+                  Ver detalles
                 </a>
               </div>
             </div>

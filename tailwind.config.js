@@ -6,10 +6,17 @@ export default {
       fontFamily: {
         'caveat': ['Caveat', 'cursive'],
         'montserrat': ['Montserrat', 'sans-serif'],
-      },
+        'alcantera-script': ['"Alcantera Script"', 'cursive'],
+        'alcantera-serif': ['"Alcantera Serif"', 'serif'],
+        'alcantera-serifss': ['"Alcantera SerifSS"', 'serif'],
+        'alcantera-swashes': ['"Alcantera Swashes"', 'cursive'],
+        'lorise-hand': ['"Lorise Hand"', 'cursive'],
+        'lorise-sans': ['"Lorise Sans"', 'sans-serif'],
+        'helvetica-neue': ['"Helvetica Neue"', 'sans-serif'],
+        'helvetica': [ 'Helvetica', 'Arial', 'Liberation Sans', 'Nimbus Sans', 'sans-serif']      },
       colors: {
         'primary': {
-          DEFAULT: '#FF6B6B',
+          DEFAULT: '#f89c6b',
           dark: '#E55A5A',
         },
         'secondary': '#2D3436',

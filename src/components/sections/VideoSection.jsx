@@ -19,9 +19,8 @@ const VideoSection = () => {
       
       <div className="relative z-10 h-full flex items-center justify-center text-center text-white">
         <div className="container mx-auto px-4">
-          <small className="block text-lg mb-4 animate-slideInUp">Luxury Hotel Experience</small>
-          <h2 className="text-4xl md:text-6xl font-caveat mb-8 animate-slideInUp">
-            Enjoy in a very<br />Immersive Relax
+          <h2 className="text-5xl md:text-7xl font-lorise-sans mb-8 animate-slideInUp font-alcantera-serif">
+            Sumérgete en la <span className="font-lorise-hand text-primary font-bold text-9xl">exclusividad</span><br />de nuevos destinos
           </h2>
         </div>
       </div>

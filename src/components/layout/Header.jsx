@@ -55,7 +55,7 @@ const Header = ({ transparent = false }) => {
               <ul className="flex space-x-8">
                 <li><a href="/" className="text-white hover:text-primary transition-colors">Inicio</a></li>
                 <li><a href="/hotels" className="text-white hover:text-primary transition-colors">Destinos</a></li>
-                <li><a href="/contacto" className="text-white hover:text-primary transition-colors">Contacto</a></li>
+                <li><a href="/contact" className="text-white hover:text-primary transition-colors">Contacto</a></li>
               </ul>
             </nav>
             <div className="flex items-center space-x-4">

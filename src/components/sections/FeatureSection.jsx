@@ -22,17 +22,21 @@ const FeatureSection = ({
         </div>
         {/* Texto */}
         <div className="md:w-1/2 w-full">
-          <span className="uppercase tracking-widest text-sm text-[#b6a179] font-semibold mb-2 block">{subtitle}</span>
-          <h2 className="text-4xl md:text-5xl font-bold text-secondary mb-4">{title}</h2>
-          <p className="text-lg text-gray-600 mb-8">{text}</p>
-          {buttonText && (
-            <a
-              href={buttonLink}
-              className="inline-block px-8 py-3 border-2 border-gray-800 rounded-full text-lg font-semibold hover:bg-gray-800 hover:text-white transition-colors"
-            >
-              {buttonText}
-            </a>
-          )}
+          <div className="mb-6 relative">
+            <span className="text-7xl text-primary font-alcantera-script mb-2 block relative z-10">{subtitle}</span>
+            <div className="ml-12 md:ml-16">
+              <h2 className="text-7xl md:text-8xl font-lorise-sans text-secondary mb-4 -mt-8 md:-mt-12 relative z-20 leading-tight" style={{ letterSpacing: '-0.03em' }}>{title}</h2>
+              <p className="text-lg text-gray-600 mb-8 font-helvetica">{text}</p>
+              {buttonText && (
+                <a
+                  href={buttonLink}
+                  className="inline-block px-8 py-3 border-2 border-gray-800 rounded-full text-lg font-semibold hover:bg-gray-800 hover:text-white transition-colors font-helvetica"
+                >
+                  {buttonText}
+                </a>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </section>

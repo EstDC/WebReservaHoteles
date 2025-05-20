@@ -35,29 +35,34 @@ const ICONOS_SERVICIOS = {
 };
 
 const HotelServicios = ({ servicios }) => (
-  <section className="max-w-5xl mx-auto my-12 px-4">
-    <h2 className="text-2xl md:text-3xl font-bold mb-2">Servicios e instalaciones</h2>
-    <p className="text-gray-500 mb-8">
-      Descubre la amplia gama de servicios e instalaciones que garantizan una estancia de lo más agradable y cómoda en nuestro hotel.
-    </p>
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-      {servicios.map((servicio, idx) => {
-        const nombre = typeof servicio === "object" ? servicio.nombre : servicio;
-        const icono = ICONOS_SERVICIOS[nombre] || "/images/iconos/default.png";
-        return (
-          <div
-            key={idx}
-            className="flex items-center gap-4 rounded-lg p-4 shadow-sm"
-          >
-            <img
-              src={icono}
-              alt={nombre}
-              className="w-8 h-8 object-contain"
-            />
-            <span className="text-gray-800 text-base">{nombre}</span>
-          </div>
-        );
-      })}
+  <section className="max-w-7xl mx-auto my-12">
+    <div className="relative mb-12">
+      <h2 className="font-alcantera-script text-9xl text-primary">Servicios</h2>
+      <h2 className="font-lorise-sans text-7xl absolute -bottom-4 left-[10%]">e instalaciones</h2>
+    </div>
+    <div className="max-w-5xl mx-auto px-4">
+      <p className="text-gray-500 mb-8 font-helvetica">
+        Descubre la amplia gama de servicios e instalaciones que garantizan una estancia de lo más agradable y cómoda en nuestro hotel.
+      </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 font-helvetica">
+        {servicios.map((servicio, idx) => {
+          const nombre = typeof servicio === "object" ? servicio.nombre : servicio;
+          const icono = ICONOS_SERVICIOS[nombre] || "/images/iconos/default.png";
+          return (
+            <div
+              key={idx}
+              className="flex items-center gap-4 rounded-lg p-4 shadow-sm"
+            >
+              <img
+                src={icono}
+                alt={nombre}
+                className="w-8 h-8 object-contain"
+              />
+              <span className="text-gray-800 text-base">{nombre}</span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   </section>
 );

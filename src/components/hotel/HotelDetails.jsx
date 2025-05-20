@@ -157,7 +157,7 @@ const HotelDetails = ({ hotelId }) => {
     const carpeta = carpetasPorId[selectedHotel.id];
     const tipoKey = tipo.toLowerCase().replace(/\s/g, '');
     const images = [];
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i <= 4; i++) {
       images.push({
         src: `/images/hotels/${carpeta}/${tipoKey}-${i}.jpg`,
         alt: `${tipo} ${i}`
@@ -170,10 +170,10 @@ const HotelDetails = ({ hotelId }) => {
   const heroSection = (
     <section className="w-screen h-screen flex flex-col md:flex-row p-0 m-0">
       {/* Columna izquierda: descripción */}
-      <div className="md:w-1/2 w-full flex items-center justify-center bg-white h-1/2 md:h-full">
-        <div className="max-w-xl p-8 text-center md:text-left">
+      <div className="md:w-1/2 w-full flex items-center justify-center bg-white h-1/2 md:h-full font-helvetica">
+        <div className="max-w-xl p-8 text-center">
           <h2 className="text-4xl md:text-5xl font-serif font-normal mb-8">{selectedHotel.tituloDestacado || ''}</h2>
-          <p className="text-lg md:text-xl text-gray-800 leading-relaxed">
+          <p className="text-lg md:text-xl text-gray-800 leading-relaxed whitespace-pre-wrap">
             {descripcion}
           </p>
         </div>
@@ -186,21 +186,28 @@ const HotelDetails = ({ hotelId }) => {
           className="absolute inset-0 w-full h-full object-cover object-center z-0"
           style={{ minHeight: '100%', minWidth: '100%' }}
         />
-        {/* Overlay oscuro para legibilidad */}
-        <div className="absolute inset-0 bg-black/30 z-10" />
+        {/* Overlay con degradado de izquierda a derecha */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent z-10" />
         {/* Contenido superpuesto */}
         <div className="relative z-20 p-8 flex flex-col items-start justify-center h-full w-full">
           {/* Ubicación */}
           <div className="flex items-center gap-2 mb-2">
-            <svg className="w-5 h-5 text-gray-200" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 11.5a3 3 0 100-6 3 3 0 000 6z"/><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7-7.5 11-7.5 11s-7.5-4-7.5-11a7.5 7.5 0 1115 0z"/></svg>
+            <svg className="w-5 h-5 text-gray-200 font-helvetica" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 11.5a3 3 0 100-6 3 3 0 000 6z"/><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7-7.5 11-7.5 11s-7.5-4-7.5-11a7.5 7.5 0 1115 0z"/></svg>
             <span className="uppercase text-xs text-gray-200 tracking-wider font-medium">
               {selectedHotel.ciudad || selectedHotel.city}{selectedHotel.pais || selectedHotel.country ? ', ' : ''}{selectedHotel.pais || selectedHotel.country}
             </span>
           </div>
           {/* Nombre del hotel */}
-          <h1 className="text-white font-serif font-bold text-3xl md:text-5xl lg:text-6xl leading-tight drop-shadow-lg mb-2">
-            {selectedHotel.name || selectedHotel.nombre}
-          </h1>
+          <div className="relative w-full overflow-visible">
+            <div className="relative">
+              <h1 className="text-white font-lorise-sans text-9xl md:text-9xl lg:text-8xl leading-tight drop-shadow-lg mb-2">
+                {(selectedHotel.name || selectedHotel.nombre).split(' ').slice(0, -1).join(' ')}
+              </h1>
+              <span className="font-alcantera-script text-white text-9xl absolute -bottom-20 left-[30%] transform -rotate-12">
+                {(selectedHotel.name || selectedHotel.nombre).split(' ').pop()}
+              </span>
+            </div>
+          </div>
           {/* Estrellas */}
           <div className="flex gap-1 mt-2">
             {Array.from({ length: selectedHotel.estrellas || selectedHotel.stars || 0 }).map((_, i) => (
@@ -221,22 +228,22 @@ const HotelDetails = ({ hotelId }) => {
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-200 bg-white rounded-none">
             {/* Contacto */}
             <div className="flex flex-col items-center md:items-start py-8 px-6">
-              <div className="uppercase text-xs text-gray-600 font-semibold mb-6 tracking-widest">CONTACTO</div>
-              <a href={`mailto:${selectedHotel.email || 'info@hotel.com'}`} className="flex items-center gap-2 mb-3 text-gray-800 hover:underline">
+              <div className="font-alcantera-script text-5xl text-primary mb-6">Contacto</div>
+              <a href={`mailto:${selectedHotel.email || 'info@hotel.com'}`} className="flex items-center gap-2 mb-3 text-gray-800 hover:underline font-helvetica">
                 <svg className="w-5 h-5 text-[#252525]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#252525" strokeWidth="2"/><path d="M3 7l9 6 9-6" stroke="#252525" strokeWidth="2"/></svg>
                 <span>{selectedHotel.email || 'info@hotel.com'}</span>
               </a>
-              <a href={`tel:${selectedHotel.telefono || selectedHotel.phone || '+34 000 000 000'}`} className="flex items-center gap-2 mb-3 text-gray-800 hover:underline">
+              <a href={`tel:${selectedHotel.telefono || selectedHotel.phone || '+34 000 000 000'}`} className="flex items-center gap-2 mb-3 text-gray-800 hover:underline font-helvetica">
                 <svg className="w-5 h-5 text-[#252525]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.72 19.72 0 013 5.18 2 2 0 015 3h3a2 2 0 012 1.72c.13 1.13.37 2.23.72 3.28a2 2 0 01-.45 2.11l-1.27 1.27a16 16 0 006.29 6.29l1.27-1.27a2 2 0 012.11-.45c1.05.35 2.15.59 3.28.72A2 2 0 0122 16.92z" /></svg>
                 <span>{selectedHotel.telefono || selectedHotel.phone || '+34 000 000 000'}</span>
               </a>
-              <div className="text-sm text-gray-600 mb-1">Check-in 15:00</div>
-              <div className="text-sm text-gray-600">Check-out 12:00</div>
+              <div className="text-sm text-gray-600 mb-1 font-helvetica">Check-in <span className="text-primary">15:00</span></div>
+              <div className="text-sm text-gray-600 font-helvetica">Check-out <span className="text-primary">12:00</span></div>
             </div>
             {/* Dirección */}
             <div className="flex flex-col items-center md:items-start py-8 px-6">
-              <div className="uppercase text-xs text-gray-600 font-semibold mb-6 tracking-widest">DIRECCIÓN</div>
-              <div className="text-base text-gray-800 mb-2 text-center md:text-left">
+              <div className="font-alcantera-script text-5xl text-primary mb-6">Dirección</div>
+              <div className="text-base text-gray-800 mb-2 text-center md:text-left font-helvetica">
                 {selectedHotel.direccion || selectedHotel.address || 'Dirección no disponible'}<br />
                 {selectedHotel.ciudad || selectedHotel.city || ''}
               </div>
@@ -244,26 +251,26 @@ const HotelDetails = ({ hotelId }) => {
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((selectedHotel.direccion || '') + ' ' + (selectedHotel.ciudad || ''))}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-gray-800 hover:underline mb-3"
+                className="flex items-center gap-2 text-sm text-primary hover:underline mb-3 font-helvetica"
               >
                 <svg width="20" height="20" viewBox="0 0 13 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M6.00078 1.80078C3.62149 1.80078 1.80078 3.59822 1.80078 5.68622C1.80078 6.0752 1.97319 6.70615 2.31982 7.52929C2.65622 8.32814 3.1207 9.22649 3.62508 10.1187C4.47672 11.6253 5.42116 13.0778 6.00074 13.9431C6.58033 13.0776 7.52478 11.6251 8.37649 10.1185C8.88087 9.22629 9.34534 8.32799 9.68175 7.52919C10.0284 6.7061 10.2008 6.07519 10.2008 5.68622C10.2008 3.59822 8.38008 1.80078 6.00078 1.80078ZM5.45348 14.9195C4.93858 14.1634 3.78267 12.4296 2.75454 10.6108C2.24065 9.70176 1.7556 8.76609 1.3982 7.9174C1.04491 7.07844 0.800781 6.28929 0.800781 5.68622C0.800781 2.98807 3.1289 0.800781 6.00078 0.800781C8.87266 0.800781 11.2008 2.98807 11.2008 5.68622C11.2008 6.2893 10.9566 7.0784 10.6034 7.91732C10.246 8.76596 9.76091 9.70158 9.24702 10.6106C8.21889 12.4293 7.0631 14.163 6.54823 14.9193C6.42872 15.0946 6.2223 15.2008 6.00078 15.2008C5.77926 15.2008 5.57299 15.0948 5.45348 14.9195ZM6.00078 4.04541C5.28281 4.04541 4.70078 4.62744 4.70078 5.34541C4.70078 6.06338 5.28281 6.64541 6.00078 6.64541C6.71875 6.64541 7.30078 6.06338 7.30078 5.34541C7.30078 4.62744 6.71875 4.04541 6.00078 4.04541ZM3.70078 5.34541C3.70078 4.07516 4.73053 3.04541 6.00078 3.04541C7.27104 3.04541 8.30078 4.07516 8.30078 5.34541C8.30078 6.61566 7.27104 7.64541 6.00078 7.64541C4.73053 7.64541 3.70078 6.61566 3.70078 5.34541Z" fill="#252525"></path></svg>
                 Ver en mapa
               </a>
-              <div className="text-sm text-gray-600 mb-1">0 km desde Playa</div>
-              <div className="text-sm text-gray-600">8 km desde Centro ciudad</div>
+              <div className="text-sm text-gray-600 mb-1 font-helvetica">0 km desde Playa</div>
+              <div className="text-sm text-gray-600 font-helvetica">8 km desde Centro ciudad</div>
             </div>
             {/* Valoraciones */}
             <div className="flex flex-col items-center md:items-start py-8 px-6">
-              <div className="uppercase text-xs text-gray-600 font-semibold mb-6 tracking-widest">VALORACIONES DE LOS VIAJEROS</div>
-              <div className="text-3xl font-serif font-bold text-[#a89c91] mb-2">4.4<span className="text-xl">/5</span></div>
+              <div className="font-alcantera-script text-5xl text-primary mb-6">Valoraciones de los viajeros</div>
+              <div className="text-3xl font-serif font-bold text-primary mb-2">4.4<span className="text-xl">/5</span></div>
               <div className="flex gap-2 mb-2">
-                <span className="w-4 h-4 rounded-full bg-[#a89c91] inline-block" />
-                <span className="w-4 h-4 rounded-full bg-[#a89c91] inline-block" />
-                <span className="w-4 h-4 rounded-full bg-[#a89c91] inline-block" />
-                <span className="w-4 h-4 rounded-full bg-[#a89c91] inline-block" />
-                <span className="w-4 h-4 rounded-full border-2 border-[#a89c91] inline-block" />
+                <span className="w-4 h-4 rounded-full bg-primary inline-block" />
+                <span className="w-4 h-4 rounded-full bg-primary inline-block" />
+                <span className="w-4 h-4 rounded-full bg-primary inline-block" />
+                <span className="w-4 h-4 rounded-full bg-primary inline-block" />
+                <span className="w-4 h-4 rounded-full border-2 border-primary inline-block" />
               </div>
-              <div className="text-sm text-gray-600">(1869 opiniones)</div>
+              <div className="text-sm text-gray-600 font-helvetica">(1869 opiniones)</div>
             </div>
           </div>
         </div>
@@ -294,7 +301,7 @@ const HotelDetails = ({ hotelId }) => {
                     {/* Info de la habitación */}
                     <div className="md:col-span-6 col-span-1 flex flex-col h-full p-4 md:p-4">
                       <div>
-                        <h3 className="text-2xl font-serif font-semibold mb-1 text-gray-900">{room.tipo}</h3>
+                        <h3 className="text-5xl font-lorise-sans font-semibold mb-1 text-primary">{room.tipo}</h3>
                         {/* Subtítulo con detalles y separadores */}
                         <div className="text-xs text-gray-700 uppercase tracking-wider mb-1 flex flex-wrap gap-x-2 gap-y-1">
                           {room.vista && <span>{room.vista}</span>}
@@ -302,7 +309,7 @@ const HotelDetails = ({ hotelId }) => {
                           {room.metrosCuadrados && <span>| {room.metrosCuadrados} m²</span>}
                         </div>
                         {/* Subtítulo pequeño (descripción de la tabla) */}
-                        <div className="text-sm text-gray-800 mb-1">{room.descripcion}</div>
+                        <div className="text-5xl text-gray-800 mb-1 font-alcantera-script">{room.descripcion}</div>
                         <div className="h-6" />
                         <p className="text-base md:text-lg text-gray-700 mb-2">
                           {getRoomParagraph(room.tipo)}
@@ -339,7 +346,7 @@ const HotelDetails = ({ hotelId }) => {
                                 window.location.href = `/booking/reserva?roomId=${room.id}&hotelId=${hotelId}`;
                               }
                             }}
-                            className="bg-[#a89c91] text-white px-6 py-2 rounded-none hover:bg-[#8c837a] transition-colors font-bold text-lg md:text-xl w-full md:w-auto"
+                            className="bg-primary text-white px-6 py-2 rounded-none hover:bg-black transition-colors font-bold text-lg md:text-xl w-full md:w-auto"
                           >
                           {t('Rerserva ahora')}
                         </button>
@@ -356,6 +363,60 @@ const HotelDetails = ({ hotelId }) => {
         {servicios && servicios.length > 0 && (
           <HotelServicios servicios={servicios} />
         )}
+
+        {/* Galería de instalaciones */}
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
+          <div className="relative mb-12">
+            <h2 className="font-alcantera-script text-9xl text-primary">Nuestras</h2>
+            <h2 className="font-lorise-sans text-7xl absolute -bottom-4 left-[10%]">instalaciones</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Piscina */}
+            <div className="relative group">
+              <img 
+                src={`/images/hotels/${carpetasPorId[selectedHotel.id]}/piscina.jpg`} 
+                alt="Piscina del hotel" 
+                className="w-full h-[400px] object-cover"
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <h3 className="text-white text-3xl font-lorise-sans">Piscina</h3>
+              </div>
+            </div>
+            {/* Gimnasio */}
+            <div className="relative group">
+              <img 
+                src={`/images/hotels/${carpetasPorId[selectedHotel.id]}/gimnasio.jpg`} 
+                alt="Gimnasio del hotel" 
+                className="w-full h-[400px] object-cover"
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <h3 className="text-white text-3xl font-lorise-sans">Gimnasio</h3>
+              </div>
+            </div>
+            {/* Restaurante */}
+            <div className="relative group">
+              <img 
+                src={`/images/hotels/${carpetasPorId[selectedHotel.id]}/restaurante.jpg`} 
+                alt="Restaurante del hotel" 
+                className="w-full h-[400px] object-cover"
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <h3 className="text-white text-3xl font-lorise-sans">Restaurante</h3>
+              </div>
+            </div>
+            {/* Spa */}
+            <div className="relative group">
+              <img 
+                src={`/images/hotels/${carpetasPorId[selectedHotel.id]}/spa.jpg`} 
+                alt="Spa del hotel" 
+                className="w-full h-[400px] object-cover"
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <h3 className="text-white text-3xl font-lorise-sans">Spa</h3>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );

@@ -81,16 +81,7 @@ const HeroHabitacionReserva = ({ habitacion }) => {
 
   return (
     <section className="w-full flex flex-col md:flex-row p-0 m-0 bg-white">
-      {/* Imagen principal a la izquierda */}
-      <div className="md:w-1/2 w-full relative flex items-center justify-start h-[60vh] md:h-[80vh]">
-        <img
-          src={mainImage.src}
-          alt={mainImage.alt}
-          className="absolute inset-0 w-full h-full object-cover object-center z-0"
-          style={{ minHeight: '100%', minWidth: '100%' }}
-        />
-      </div>
-      {/* Info de la habitación a la derecha */}
+      {/* Info de la habitación a la izquierda */}
       <div className="md:w-1/2 w-full flex flex-col justify-center p-8 md:p-16">
         <h1 className="text-4xl md:text-5xl font-serif font-bold mb-2 text-gray-900">{habitacion.tipo}</h1>
         {habitacion.vista && (
@@ -107,6 +98,15 @@ const HeroHabitacionReserva = ({ habitacion }) => {
         </div>
         <div className="text-lg text-gray-800 mb-2">Capacidad: {habitacion.capacidad}</div>
         <div className="text-2xl font-bold text-primary mb-2">{habitacion.precioPorNoche}€ / noche</div>
+      </div>
+      {/* Imagen principal a la derecha */}
+      <div className="md:w-1/2 w-full relative flex items-center justify-start h-[60vh] md:h-[80vh]">
+        <img
+          src={mainImage.src}
+          alt={mainImage.alt}
+          className="absolute inset-0 w-full h-full object-cover object-center z-0"
+          style={{ minHeight: '100%', minWidth: '100%' }}
+        />
       </div>
     </section>
   );

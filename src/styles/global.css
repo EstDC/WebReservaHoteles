@@ -35,6 +35,49 @@
 body, #__astro, #app, main {
   margin: 0 !important;
   padding: 0 !important;
-  width: 100vw !important;
+  width: 100% !important;
   box-sizing: border-box;
+}
+
+@font-face {
+  font-family: 'Alcantera Script';
+  src: url('/fonts/Alcantera-Script.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Alcantera Serif';
+  src: url('/fonts/Alcantera-Serif.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Alcantera SerifSS';
+  src: url('/fonts/Alcantera-SerifSS.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Alcantera Swashes';
+  src: url('/fonts/Alcantera-Swashes.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Lorise Hand';
+  src: url('/fonts/LoriseHand.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Lorise Sans';
+  src: url('/fonts/LoriseSans.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }

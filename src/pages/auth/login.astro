@@ -5,7 +5,7 @@ import LoginForm from '../../components/auth/LoginForm.jsx';
 ---
 
 <Layout title="Iniciar Sesión - HotelFinder">
-  <Header client:load />
+  <Header transparent client:load />
   <main class="relative min-h-screen flex items-center justify-center">
     {/* Video Background */}
     <div class="absolute inset-0 z-0">
@@ -22,10 +22,15 @@ import LoginForm from '../../components/auth/LoginForm.jsx';
     </div>
 
     {/* Content */}
-    <div class="relative z-10 w-full max-w-md mx-auto px-8 py-10 bg-white/60 backdrop-blur-sm rounded-lg">
-      <h1 class="text-4xl font-bold mb-8 text-center text-gray-900">Iniciar Sesión</h1>
+    <div class="relative z-10 w-full max-w-md mx-auto px-8 py-4 bg-white/60 backdrop-blur-sm rounded-lg">
+      <div class="relative mb-8 flex justify-center">
+        <div class="relative">
+          <h1 class="font-alcantera-script text-9xl text-primary">Iniciar</h1>
+          <h1 class="font-lorise-sans text-7xl absolute -bottom-2 left-[30%]">Sesión</h1>
+        </div>
+      </div>
       <LoginForm client:load />
-      <p class="mt-4 text-center text-gray-900">
+      <p class="text-center text-gray-900 font-helvetica mb-4">
         ¿No tienes una cuenta? 
         <a href="/auth/register" class="text-primary hover:text-gray-900 transition-colors ml-1">Regístrate aquí</a>
       </p>
