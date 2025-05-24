@@ -2,35 +2,29 @@
 import PagoReserva from '../../components/pago/PagoReserva.jsx';
 import Header from '../../components/layout/Header.jsx';
 import Footer from '../../components/layout/Footer.jsx';
+import Layout from '../../layouts/Layout.astro';
 
 const { id } = Astro.params;
 
 // Debugging - ver qué recibimos
-console.log('=== ASTRO DEBUG ===');
-console.log('Full Astro.params:', Astro.params);
-console.log('ID extraído:', id);
-console.log('Tipo de ID:', typeof id);
-console.log('URL completa:', Astro.url.pathname);
+//console.log('=== ASTRO DEBUG ===');
+//console.log('Full Astro.params:', Astro.params);
+//console.log('ID extraído:', id);
+//console.log('Tipo de ID:', typeof id);
+//console.log('URL completa:', Astro.url.pathname);
 
 // Convertir a número si existe
 const reservaId = id ? parseInt(id, 10) : null;
 
-console.log('ID convertido:', reservaId);
-console.log('Tipo después de conversión:', typeof reservaId);
-console.log('==================');
+//console.log('ID convertido:', reservaId);
+//console.log('Tipo después de conversión:', typeof reservaId);
+//console.log('==================');
 ---
 
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pago de Reserva</title>
-  </head>
-  <body>
-    <Header client:load />
-    <main class="p-0 m-0">
-      <PagoReserva client:load reservaId={reservaId} />
-    </main>
-    <Footer client:load />
-  </body>
-</html>
+<Layout title="Pago de Reserva">
+  <Header transparent client:load />
+  <main class="p-0 m-0">
+    <PagoReserva client:load reservaId={reservaId} />
+  </main>
+</Layout>
+

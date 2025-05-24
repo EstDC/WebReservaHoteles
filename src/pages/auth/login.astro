@@ -10,13 +10,20 @@ import LoginForm from '../../components/auth/LoginForm.jsx';
     {/* Video Background */}
     <div class="absolute inset-0 z-0">
       <div class="relative w-full h-full">
+        {/* Fallback image */}
+        <img 
+          src="/images/img/walking_auth.jpg" 
+          alt="Login Background"
+          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] object-cover"
+        />
         <iframe
           class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh]"
-          src="https://www.youtube.com/embed/mcWB44uIIrQ?autoplay=1&mute=1&controls=0&loop=1&playlist=mcWB44uIIrQ&playsinline=1&showinfo=0&rel=0&modestbranding=1"
+          src="https://www.youtube.com/embed/mcWB44uIIrQ?autoplay=1&mute=1&controls=0&loop=1&playlist=mcWB44uIIrQ&playsinline=1&showinfo=0&rel=0&modestbranding=1&enablejsapi=1&origin=tu-dominio.com"
           title="Background Video"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen
+          loading="lazy"
         />
       </div>
     </div>

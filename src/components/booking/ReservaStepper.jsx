@@ -6,9 +6,24 @@ import api from '../../utils/api';
 import { useHotelStore } from '../../stores/hotelStore';
 
 const steps = [
-  { key: 'fechas', label: 'busca tus fecha', color: 'bg-primary', text: 'text-white' },
-  { key: 'extras', label: 'añade extras', color: 'bg-black', text: 'text-white' },
-  { key: 'resumen', label: 'desglose final', color: 'bg-primary', text: 'text-white' },
+  { 
+    key: 'fechas', 
+    label: { first: 'busca', second: 'tus fechas' },
+    color: 'bg-primary', 
+    text: 'text-white' 
+  },
+  { 
+    key: 'extras', 
+    label: { first: 'añade', second: 'extras' },
+    color: 'bg-black', 
+    text: 'text-white' 
+  },
+  { 
+    key: 'resumen', 
+    label: { first: 'Total', second: 'de la reserva' },
+    color: 'bg-primary', 
+    text: 'text-white' 
+  },
 ];
 
 const drawerBackgrounds = {
@@ -29,6 +44,7 @@ const ReservaStepper = ({ habitacionId, onReservaCompletada }) => {
   const [extrasSeleccionados, setExtrasSeleccionados] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [fechasError, setFechasError] = useState('');
   const user = useHotelStore(state => state.user);
   const setCurrentReservaId = useHotelStore(state => state.setCurrentReservaId);
 
@@ -60,7 +76,15 @@ const ReservaStepper = ({ habitacionId, onReservaCompletada }) => {
   // Enviar reserva
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validar fechas antes de continuar
+    if (!fechaEntrada || !fechaSalida) {
+      setFechasError('Por favor, selecciona las fechas de entrada y salida');
+      return;
+    }
+    
     try {
+      setFechasError('');
       // Calcular noches y totales
       const noches = fechaEntrada && fechaSalida ? 
         Math.ceil((fechaSalida - fechaEntrada) / (1000 * 60 * 60 * 24)) : 0;
@@ -151,7 +175,7 @@ const ReservaStepper = ({ habitacionId, onReservaCompletada }) => {
         <div key={step.key} className="relative w-full">
           {/* Bloque de color */}
           <div
-            className={`w-full ${step.color} ${step.text} text-center py-6 cursor-pointer font-semibold text-lg transition-all`}
+            className={`w-full ${step.color} ${step.text} text-center py-6 cursor-pointer transition-all relative`}
             onClick={() => setOpenStep(openStep === step.key ? null : step.key)}
             style={{
               borderBottomLeftRadius: openStep === step.key ? '1.5rem' : 0,
@@ -159,7 +183,14 @@ const ReservaStepper = ({ habitacionId, onReservaCompletada }) => {
               marginBottom: 0
             }}
           >
-            {step.label}
+            <div className="relative inline-block" style={{ minWidth: '220px' }}>
+              <span className="font-alcantera-script text-6xl text-white block text-left leading-tight" style={{ position: 'relative', zIndex: 1 }}>
+                {step.label.first}
+              </span>
+              <span className="font-lorise-sans text-5xl text-white block absolute translate-x-6 -bottom-1 leading-none" style={{ zIndex: 2 }}>
+                {step.label.second}
+              </span>
+            </div>
           </div>
           {/* Drawer debajo del bloque si está abierto */}
           {openStep === step.key && (
@@ -202,6 +233,9 @@ const ReservaStepper = ({ habitacionId, onReservaCompletada }) => {
                       return (
                         <>
                           <div className="uppercase text-xs text-gray-600 font-semibold mb-4 tracking-widest">FECHAS</div>
+                          {fechasError && (
+                            <div className="text-red-500 mb-4">{fechasError}</div>
+                          )}
                           <div className="flex flex-col md:flex-row gap-6">
                             <div className="flex-1">
                               <label className="block font-semibold mb-1">Fecha de entrada:</label>
@@ -268,6 +302,9 @@ const ReservaStepper = ({ habitacionId, onReservaCompletada }) => {
                       const noches = fechaEntrada && fechaSalida ? 
                         Math.ceil((fechaSalida - fechaEntrada) / (1000 * 60 * 60 * 24)) : 0;
                       
+                      // Validar si las fechas están completas
+                      const fechasCompletas = fechaEntrada && fechaSalida;
+                      
                       // Calcular precio de habitación
                       const precioHabitacion = habitacion?.precioPorNoche || 0;
                       const totalHabitacion = noches * precioHabitacion;
@@ -284,7 +321,7 @@ const ReservaStepper = ({ habitacionId, onReservaCompletada }) => {
 
                       return (
                         <form onSubmit={handleSubmit}>
-                          <div className="uppercase text-xs text-gray-600 font-semibold mb-4 tracking-widest">RESUMEN</div>
+                          <div className="text-8xl text-primary font-alcantera-script mb-4">Resumen</div>
                           <div className="mb-2">
                             <span className="font-semibold">Habitación:</span> {habitacion?.tipo}
                           </div>
@@ -321,14 +358,19 @@ const ReservaStepper = ({ habitacionId, onReservaCompletada }) => {
                           <div className="font-bold mt-2 text-lg">
                             Total extras: {totalExtras.toFixed(2)} €
                           </div>
-                          <div className="font-bold mt-2 text-xl border-t pt-2">
+                          <div className="font-bold mt-2 border-t pt-2 text-3xl">
                             Total general: {totalGeneral.toFixed(2)} €
                           </div>
                           <button
                             type="submit"
-                            className="mt-8 w-full bg-primary text-white px-6 py-3 rounded hover:bg-primary-dark transition font-bold text-lg"
+                            disabled={!fechasCompletas}
+                            className={`mt-8 w-full px-6 py-3 rounded transition font-bold text-lg ${
+                              fechasCompletas 
+                                ? 'bg-primary text-white hover:bg-primary-dark' 
+                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            }`}
                           >
-                            Reservar
+                            {fechasCompletas ? 'Reservar' : 'Selecciona las fechas primero'}
                           </button>
                         </form>
                       );

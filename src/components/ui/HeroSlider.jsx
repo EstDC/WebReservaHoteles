@@ -39,7 +39,7 @@ const slides = [
 
 const ANIMATION_DURATION = 1; // segundos
 const TEXT_ANIMATION_DURATION = 0.6; // segundos, solo para el texto
-const AUTO_SLIDE_INTERVAL = 6000; // ms
+const AUTO_SLIDE_INTERVAL = 5000; // ms
 
 export function SliderRelleno() {
   const [current, setCurrent] = useState(0);

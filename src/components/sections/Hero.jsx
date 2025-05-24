@@ -1,15 +1,17 @@
 import { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const Hero = () => {
-  const [fechaInicio, setFechaInicio] = useState('');
-  const [fechaFin, setFechaFin] = useState('');
+  const [fechaInicio, setFechaInicio] = useState("");
+  const [fechaFin, setFechaFin] = useState("");
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (!fechaInicio || !fechaFin) return;
     const searchParams = new URLSearchParams({
-      fechaInicio,
-      fechaFin
+      fechaInicio: new Date(fechaInicio).toISOString().split('T')[0],
+      fechaFin: new Date(fechaFin).toISOString().split('T')[0]
     });
     window.location.href = `/search?${searchParams.toString()}`;
   };
@@ -19,13 +21,20 @@ const Hero = () => {
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
         <div className="relative w-full h-full">
+          {/* Fallback image */}
+          <img 
+            src="/images/img/surf-hero.jpg" 
+            alt="Background"
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] object-cover"
+          />
           <iframe
             className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh]"
-            src="https://www.youtube.com/embed/dYNocze1pdU?autoplay=1&mute=1&controls=0&loop=1&playlist=dYNocze1pdU&playsinline=1&showinfo=0&rel=0&modestbranding=1"
+            src="https://www.youtube.com/embed/dYNocze1pdU?autoplay=1&mute=1&controls=0&loop=1&playlist=dYNocze1pdU&playsinline=1&showinfo=0&rel=0&modestbranding=1&enablejsapi=1&origin=tu-dominio.com"
             title="Background Video"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
+            loading="lazy"
           />
         </div>
         <div className="absolute inset-0 bg-black/20" />
@@ -45,7 +54,7 @@ const Hero = () => {
                 <label className="block text-sm font-helvetica text-white mb-1">Fecha de inicio</label>
                 <input
                   type="date"
-                  value={fechaInicio}
+                  value={fechaInicio || ""}
                   onChange={e => setFechaInicio(e.target.value)}
                   className="w-full p-3 rounded-lg bg-white/20 text-white placeholder-white/70"
                   required
@@ -55,7 +64,7 @@ const Hero = () => {
                 <label className="block text-sm font-helvetica text-white mb-1">Fecha de fin</label>
                 <input
                   type="date"
-                  value={fechaFin}
+                  value={fechaFin || ""}
                   onChange={e => setFechaFin(e.target.value)}
                   className="w-full p-3 rounded-lg bg-white/20 text-white placeholder-white/70"
                   required

@@ -580,10 +580,7 @@ const AccountLayout = () => {
                   try {
                     await api.delete(`/usuarios/${user.id}`);
                     await logout();
-                    const event = new CustomEvent('navigate', {
-                      detail: { url: '/' }
-                    });
-                    window.dispatchEvent(event);
+                    window.location.href = '/';
                   } catch (error) {
                     console.error('Error al darse de baja:', error);
                     setError('Error al darse de baja. Por favor, intenta de nuevo más tarde.');

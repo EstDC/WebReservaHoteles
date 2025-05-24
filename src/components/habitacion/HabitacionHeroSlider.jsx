@@ -26,7 +26,7 @@ const slides = [
       second: 'la auténtica aventura',
     },
     subtitle: 'Hoteles seleccionados para ti',
-    leftImage: '/images/img/track2.jpg',
+    leftImage: '/images/img/yZofQgKMSSxi9Gj6kJYi3a.jpg',
     rightImage: '/images/img/istockphoto-533346433-612x612.jpg',
   },
 ];

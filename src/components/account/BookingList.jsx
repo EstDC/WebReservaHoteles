@@ -80,11 +80,11 @@ const BookingList = ({ bookings }) => {
   const pastBookings = bookingsState.filter(booking => toDate(booking.fechaSalida) <= now || booking.estado.toUpperCase() === 'CANCELADA');
 
   // Log de depuración
-  console.log('Bookings recibidos:', bookings);
-  console.log('Extras de las reservas:', bookings.map(b => ({
-    id: b.id,
-    extras: b.reservaExtras
-  })));
+  //console.log('Bookings recibidos:', bookings);
+  //console.log('Extras de las reservas:', bookings.map(b => ({
+  //  id: b.id,
+  //  extras: b.reservaExtras
+  //})));
 
   const handleCancel = async (bookingId) => {
     setCancellingId(bookingId);
@@ -260,7 +260,7 @@ const BookingList = ({ bookings }) => {
               : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
-          {t('bookings.active')} ({activeBookings.length})
+          {t('Reservas activas')} ({activeBookings.length})
         </button>
         <button
           onClick={() => setActiveTab('past')}
@@ -270,7 +270,7 @@ const BookingList = ({ bookings }) => {
               : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
-          {t('bookings.past')} ({pastBookings.length})
+          {t('Reservas archivadas')} ({pastBookings.length})
         </button>
       </div>
 

@@ -83,12 +83,12 @@ const HeroHabitacionReserva = ({ habitacion }) => {
     <section className="w-full flex flex-col md:flex-row p-0 m-0 bg-white">
       {/* Info de la habitación a la izquierda */}
       <div className="md:w-1/2 w-full flex flex-col justify-center p-8 md:p-16">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold mb-2 text-gray-900">{habitacion.tipo}</h1>
+        <h1 className="text-7xl font-lorise-sans font-semibold mb-1 text-primary">{habitacion.tipo}</h1>
         {habitacion.vista && (
           <div className="text-lg text-gray-600 mb-2">{habitacion.vista}</div>
         )}
-        <p className="mb-6 text-lg text-gray-700">{habitacion.descripcion}</p>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+        <div className="text-6xl text-gray-800 mb-1 font-alcantera-script">{habitacion.descripcion}</div>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4 mt-6">
           {FIXED_AMENITIES.map((amenity, i) => (
             <div key={i} className="flex items-center gap-2 text-gray-700 text-base">
               <img src={amenity.icon} alt={amenity.label} className="w-6 h-6 object-contain" />

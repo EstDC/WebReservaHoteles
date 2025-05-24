@@ -54,14 +54,14 @@ const LoginForm = () => {
       // La redirección se manejará en el useEffect cuando user cambie
     } catch (error) {
       console.error('LoginForm: Error en login:', error);
-      let errorMessage = t('auth.loginError');
+      let errorMessage = t('Error al iniciar sesión');
       
       if (error.response?.status === 401) {
-        errorMessage = t('auth.invalidCredentials');
+        errorMessage = t('Credenciales incorrectas');
       } else if (error.response?.status === 400) {
-        errorMessage = t('auth.invalidEmail');
+        errorMessage = t('Correo electrónico o contraseña incorrectos');
       } else if (error.message === 'Network Error') {
-        errorMessage = t('auth.networkError');
+        errorMessage = t('Error de red');
       }
       
       setError(errorMessage);

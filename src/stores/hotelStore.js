@@ -257,6 +257,17 @@ const useHotelStore = create(
         }));
       },
 
+      // Recuperación de contraseña
+      solicitarRecuperacionPassword: async (email) => {
+        const response = await api.post(`/usuarios/recuperar-password?email=${encodeURIComponent(email)}`);
+        // Devuelve el token para usarlo en el siguiente paso
+        return response.data.token;
+      },
+      cambiarPasswordConToken: async (token, newPassword) => {
+        const response = await api.post(`/usuarios/cambiar-password?token=${encodeURIComponent(token)}&nuevaPassword=${encodeURIComponent(newPassword)}`);
+        return response.data;
+      },
+
       // Utilidades
       showLoginLogs: () => {
         if (typeof window === 'undefined') return;

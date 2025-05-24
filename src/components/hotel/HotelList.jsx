@@ -82,12 +82,12 @@ const HotelList = () => {
   if (!hotels || !hotels.length) {
     return (
       <div className="text-center text-gray-600 p-4">
-        <p className="font-semibold">{t('hotels.noHotels')}</p>
+        <p className="font-semibold">{t('No hay hoteles disponibles')}</p>
         <button 
           onClick={() => fetchHotels(filters)} 
           className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
         >
-          {t('common.refresh')}
+          {t('Refrescar')}
         </button>
       </div>
     );

@@ -43,7 +43,14 @@ const ExtrasModal = ({ extras, open, onClose, onConfirm, initialSelected = {} })
       <div className="bg-white rounded-lg w-full max-w-2xl flex flex-col relative shadow-2xl max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between border-b px-8 py-6">
-          <h2 className="text-2xl font-bold">Completa tu estancia añadiendo servicios extra</h2>
+        <div className="relative mb-8">
+          <h2 className="font-lorise-sans text-2xl md:text-3xl text-gray-900 relative z-10">
+            Completa tu estancia añadiendo
+          </h2>
+          <h2 className="font-alcantera-script text-6xl md:text-7xl text-primary relative z-10 -mt-7 md:-mt-9 translate-x-48">
+            servicios extra
+          </h2>
+        </div>
           <button className="text-3xl text-gray-400 hover:text-black" onClick={onClose}>×</button>
         </div>
         {/* Contenido scrollable */}
