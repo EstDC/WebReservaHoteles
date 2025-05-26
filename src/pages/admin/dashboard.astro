@@ -1,7 +1,8 @@
 ---
-import Layout from '../../../layouts/Layout.astro';
-import Header from '../../../components/layout/Header.jsx';
-import AdminDashboard from '../../../components/admin/AdminDashboard.jsx';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/layout/Header.jsx';
+import AdminDashboard from '../../components/admin/AdminDashboard.jsx';
+import AdminRoute from '../../components/auth/AdminRoute.jsx';
 ---
 
 <Layout title="Panel de Administración - HotelFinder">
@@ -9,7 +10,9 @@ import AdminDashboard from '../../../components/admin/AdminDashboard.jsx';
   <main class="container mx-auto px-4 py-8">
     <div class="max-w-7xl mx-auto">
       <h1 class="text-3xl font-bold mb-8">Panel de Administración</h1>
-      <AdminDashboard client:load />
+      <AdminRoute client:load>
+        <AdminDashboard client:load />
+      </AdminRoute>
     </div>
   </main>
 </Layout>

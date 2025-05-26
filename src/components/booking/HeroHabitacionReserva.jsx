@@ -1,5 +1,4 @@
 import React from 'react';
-import ImageSlider from '../../components/ImageSlider';
 
 const FIXED_AMENITIES = [
   { icon: '/images/iconos/shower.png', label: 'Ducha efecto lluvia' },

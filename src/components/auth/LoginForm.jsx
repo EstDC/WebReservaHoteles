@@ -28,7 +28,7 @@ const LoginForm = () => {
       // Esperar 1.5 segundos antes de redirigir para mostrar el mensaje de éxito
       const timer = setTimeout(() => {
         const params = new URLSearchParams(window.location.search);
-        const redirectUrl = params.get('redirect') || '/account';
+        const redirectUrl = params.get('redirect') || (user.role === 'ADMIN' ? '/admin' : '/account');
         window.location.href = redirectUrl;
       }, 1500);
 

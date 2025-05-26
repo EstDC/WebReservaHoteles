@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/layout/Header';
 import AccountLayout from '../../components/account/AccountLayout';
 import StoreInitializer from '../../components/common/StoreInitializer';
+import UserRoute from '../../components/auth/UserRoute';
 ---
 
 <Layout title="Mi Cuenta">
@@ -42,7 +43,9 @@ import StoreInitializer from '../../components/common/StoreInitializer';
 
     <!-- Main Content -->
     <div class="mt-16 md:mt-24">
-      <AccountLayout client:load />
+      <UserRoute client:load>
+        <AccountLayout client:load />
+      </UserRoute>
     </div>
   </main>
 </Layout>

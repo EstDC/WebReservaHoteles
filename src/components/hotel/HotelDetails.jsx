@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHotelStore } from '../../stores/hotelStore';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import ImageSlider from '../../components/ImageSlider';
+import ImageSlider from '../../components/hotel/ImageSlider';
 import HotelServicios from './HotelServicios';
 
 const FIXED_AMENITIES = [
