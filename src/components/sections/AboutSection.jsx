@@ -15,16 +15,16 @@ const AboutSection = () => {
               className="relative"
             >
               <img
-                src="/images/img/H5HjF5SC83iTYLbvyxmd.avif"
+                src="/images/img/H5HjF5SC83iTYLbvyxmd.jpg"
                 alt="Hotel Interior"
-                className="w-full h-[600px] object-cover rounded-lg shadow-xl"
+                className="w-full h-auto aspect-[4/3] max-h-[600px] object-cover rounded-lg shadow-xl"
               />
               <motion.div
                 initial={{ opacity: 0, x: -30, y: 30 }}
                 whileInView={{ opacity: 1, x: 0, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
                 viewport={{ once: true }}
-                className="absolute -bottom-8 -left-8 w-64 h-64 rounded-lg shadow-xl overflow-hidden"
+                className="absolute -bottom-4 -left-4 sm:-bottom-8 sm:-left-8 w-32 h-32 sm:w-40 sm:h-40 md:w-56 md:h-56 lg:w-64 lg:h-64 rounded-lg shadow-xl overflow-hidden"
               >
                 <img
                   src="/images/img/e7cnL4wZUEFNF1DN8VdE.avif"

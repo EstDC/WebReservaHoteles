@@ -46,9 +46,9 @@ const adminService = {
     }
   },
 
-  async updateHotelStatus(hotelId, active) {
+  async updateHotelStatus(hotelId, hotelData) {
     try {
-      const { data } = await api.put(`/hoteles/${hotelId}`, { activo: active });
+      const { data } = await api.put(`/hoteles/${hotelId}`, hotelData);
       return data;
     } catch (error) {
       console.error('Error en updateHotelStatus:', error);
@@ -146,9 +146,9 @@ const adminService = {
     }
   },
 
-  async updateUserStatus(userId, active) {
+  async updateUserStatus(userId, userData) {
     try {
-      const { data } = await api.put(`/usuarios/${userId}`, { activo: active });
+      const { data } = await api.put(`/usuarios/${userId}`, userData);
       return data;
     } catch (error) {
       console.error('Error en updateUserStatus:', error);

@@ -67,7 +67,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="border-t border-[#44434a] pt-6 text-center text-gray-300 text-sm">
-          
+
         </div>
       </div>
       {/* Botón scroll top */}

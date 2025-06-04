@@ -72,13 +72,13 @@ const LoginForm = () => {
 
   if (success) {
     return (
-      <div className="backdrop-blur-sm p-8 rounded-lg text-center">
+      <div className="backdrop-blur-sm p-4 sm:p-8 rounded-lg text-center">
         <div className="flex flex-col items-center space-y-4">
           <FaCheckCircle className="w-16 h-16 text-primary" />
-          <h2 className="text-2xl font-semibold text-gray-900">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">
             ¡Bienvenido de nuevo!
           </h2>
-          <p className="text-gray-600 font-helvetica">
+          <p className="text-gray-600 font-helvetica text-sm sm:text-base">
             Has iniciado sesión correctamente. Redirigiendo...
           </p>
           <div className="w-8 h-8 border-t-2 border-b-2 border-primary rounded-full animate-spin"></div>
@@ -93,15 +93,15 @@ const LoginForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="backdrop-blur-sm p-8 rounded-lg">
+    <form onSubmit={handleSubmit} className="backdrop-blur-sm p-4 sm:p-8 rounded-lg">
       {error && (
-        <div className="mb-4 p-3 bg-red-500/50 backdrop-blur-sm text-white rounded-md">
+        <div className="mb-4 p-3 bg-red-500/50 backdrop-blur-sm text-white rounded-md text-sm sm:text-base">
           {error}
         </div>
       )}
 
       <div className="mb-6">
-        <label htmlFor="email" className="block text-sm  text-gray-900 mb-2 font-helvetica">
+        <label htmlFor="email" className="block text-xs sm:text-sm  text-gray-900 mb-2 font-helvetica">
           {t('Correo electrónico')}
         </label>
         <input
@@ -111,14 +111,14 @@ const LoginForm = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full px-4 py-3 bg-white/20 border border-gray-300 text-gray-900 font-helvetica placeholder-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent backdrop-blur-sm"
+          className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-white/20 border border-gray-300 text-gray-900 font-helvetica placeholder-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent backdrop-blur-sm text-sm sm:text-base"
           placeholder="tu@email.com"
           disabled={loading}
         />
       </div>
 
       <div className="mb-6">
-        <label htmlFor="password" className="block text-sm font-helvetica text-gray-900 mb-2">
+        <label htmlFor="password" className="block text-xs sm:text-sm font-helvetica text-gray-900 mb-2">
           {t('Contraseña')}
         </label>
         <input
@@ -128,7 +128,7 @@ const LoginForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="w-full px-4 py-3 bg-white/20 border border-gray-300 text-gray-900 font-helvetica placeholder-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent backdrop-blur-sm"
+          className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-white/20 border border-gray-300 text-gray-900 font-helvetica placeholder-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent backdrop-blur-sm text-sm sm:text-base"
           placeholder="••••••••"
           disabled={loading}
         />
@@ -137,7 +137,7 @@ const LoginForm = () => {
       <div className="flex items-center justify-between mb-6">
         <a
           href="/auth/recover-password"
-          className="text-sm text-gray-900 hover:text-primary transition-colors font-helvetica"
+          className="text-xs sm:text-sm text-gray-900 hover:text-primary transition-colors font-helvetica"
         >
           {t('He olvidado mi contraseña')}
         </a>
@@ -145,7 +145,7 @@ const LoginForm = () => {
 
       <button
         type="submit"
-        className="w-full bg-primary text-white py-3 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-primary text-white py-2 sm:py-3 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
         disabled={loading}
       >
         {loading ? (

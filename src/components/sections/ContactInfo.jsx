@@ -69,7 +69,7 @@ const ContactInfo = () => {
       {/* Segunda fila: Formulario, fondo primario y ocupa todo el ancho */}
       <div className="w-full bg-primary py-12">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="bg-white rounded-lg shadow-lg p-8">
+          <div className="bg-white rounded-lg shadow-lg p-4 sm:p-8 overflow-x-hidden max-w-full">
             {sent ? (
               <div className="flex flex-col items-center justify-center py-16">
                 <h2 className="font-alcantera-script text-5xl text-primary mb-4">¡Gracias por tu mensaje!</h2>
@@ -78,7 +78,7 @@ const ContactInfo = () => {
                 </p>
               </div>
             ) : (
-              <form className="grid grid-cols-1 md:grid-cols-2 gap-8" onSubmit={handleSubmit}>
+              <form className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8" onSubmit={handleSubmit}>
                 {/* Columna izquierda */}
                 <div>
                   <div className="relative">

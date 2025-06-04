@@ -6,18 +6,18 @@ import LoginForm from '../../components/auth/LoginForm.jsx';
 
 <Layout title="Iniciar Sesión - HotelFinder">
   <Header transparent client:load />
-  <main class="relative min-h-screen flex items-center justify-center">
-    {/* Video Background */}
-    <div class="absolute inset-0 z-0">
-      <div class="relative w-full h-full">
-        {/* Fallback image */}
+  <main class="relative flex-1 min-h-screen flex flex-col items-center justify-center pb-8">
+    {/* Fondo de vídeo */}
+    <div class="fixed inset-0 z-0 w-full h-full">
+      {/* Desktop: hack solo en sm+ */}
+      <div class="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh]">
         <img 
           src="/images/img/walking_auth.jpg" 
           alt="Login Background"
-          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] object-cover"
+          class="w-full h-full object-cover"
         />
         <iframe
-          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh]"
+          class="w-full h-full absolute inset-0 object-cover"
           src="https://www.youtube.com/embed/mcWB44uIIrQ?autoplay=1&mute=1&controls=0&loop=1&playlist=mcWB44uIIrQ&playsinline=1&showinfo=0&rel=0&modestbranding=1&enablejsapi=1&origin=tu-dominio.com"
           title="Background Video"
           frameborder="0"
@@ -26,18 +26,36 @@ import LoginForm from '../../components/auth/LoginForm.jsx';
           loading="lazy"
         />
       </div>
+      {/* Móvil: fondo cubre todo el alto */}
+      <div class="block sm:hidden fixed inset-0 w-full h-full">
+        <img 
+          src="/images/img/walking_auth.jpg" 
+          alt="Login Background"
+          class="w-full h-full object-cover"
+        />
+        <iframe
+          class="w-full h-full object-cover"
+          src="https://www.youtube.com/embed/mcWB44uIIrQ?autoplay=1&mute=1&controls=0&loop=1&playlist=mcWB44uIIrQ&playsinline=1&showinfo=0&rel=0&modestbranding=1&enablejsapi=1&origin=tu-dominio.com&playsinline=1&mute=1&autoplay=1&loop=1&controls=0&disablekb=1&fs=0&iv_load_policy=3&modestbranding=1&rel=0&showinfo=0&playsinline=1"
+          title="Background Video"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          loading="lazy"
+          playsinline
+        />
+      </div>
     </div>
 
     {/* Content */}
-    <div class="relative z-10 w-full max-w-md mx-auto px-8 py-4 bg-white/60 backdrop-blur-sm rounded-lg">
+    <div class="relative z-10 w-full max-w-xs sm:max-w-md mx-auto px-2 sm:px-8 py-4 bg-white/60 backdrop-blur-sm rounded-lg my-auto">
       <div class="relative mb-8 flex justify-center">
         <div class="relative">
-          <h1 class="font-alcantera-script text-9xl text-primary">Iniciar</h1>
-          <h1 class="font-lorise-sans text-7xl absolute -bottom-2 left-[30%]">Sesión</h1>
+          <h1 class="font-alcantera-script text-5xl sm:text-9xl text-primary">Iniciar</h1>
+          <h1 class="font-lorise-sans text-3xl sm:text-7xl absolute -bottom-2 left-1/4 sm:left-[30%]">Sesión</h1>
         </div>
       </div>
       <LoginForm client:load />
-      <p class="text-center text-gray-900 font-helvetica mb-4">
+      <p class="text-center text-gray-900 font-helvetica mb-4 text-sm sm:text-base">
         ¿No tienes una cuenta? 
         <a href="/auth/register" class="text-primary hover:text-gray-900 transition-colors ml-1">Regístrate aquí</a>
       </p>

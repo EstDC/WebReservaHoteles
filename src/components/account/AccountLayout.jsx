@@ -318,7 +318,7 @@ const AccountLayout = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-4 md:p-8 flex flex-col justify-start min-h-[80vh] md:min-h-[600px] mt-16">
+      <div className="flex-1 p-4 md:p-8 flex flex-col justify-start min-h-[80vh] md:min-h-[600px] mt-16 overflow-x-auto max-w-full w-full md:overflow-visible md:max-w-none">
         {activeTab === 'profile' && (
           <div>
             <div class="relative mb-12">

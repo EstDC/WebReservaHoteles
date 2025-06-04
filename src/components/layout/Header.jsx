@@ -37,7 +37,7 @@ const Header = ({ transparent = false }) => {
   return (
     <header
       className={`fixed w-full z-50 transition-all duration-300 ${
-        scrolled
+        scrolled || isMenuOpen
           ? 'bg-black/90 backdrop-blur-sm'
           : (transparent ? 'bg-transparent' : 'bg-black/20 backdrop-blur-sm')
       }`}
@@ -46,7 +46,7 @@ const Header = ({ transparent = false }) => {
         <div className="flex items-center justify-between h-20">
           <div className="w-32">
             <a href="/" className="block">
-              <img src="/img/logo.png" alt="Hotel Logo" className="h-12" />
+              <img src="/images/img/logo.png" alt="Hotel Logo" className="h-12" />
             </a>
           </div>
 
@@ -103,13 +103,19 @@ const Header = ({ transparent = false }) => {
         </div>
 
         {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden fixed inset-0 bg-black/95 z-50 pt-20">
-            <nav className="container mx-auto px-4">
+        <div 
+          className={`md:hidden fixed left-0 right-0 transition-all duration-300 ease-in-out ${
+            isMenuOpen 
+              ? 'top-20 opacity-100 visible' 
+              : '-top-full opacity-0 invisible'
+          }`}
+        >
+          <div className="bg-black/95 backdrop-blur-sm min-h-screen">
+            <nav className="container mx-auto px-4 py-6">
               <ul className="space-y-4">
                 <li><a href="/" className="block text-white hover:text-primary transition-colors py-2">Inicio</a></li>
                 <li><a href="/hotels" className="block text-white hover:text-primary transition-colors py-2">Destinos</a></li>
-                <li><a href="/contacto" className="block text-white hover:text-primary transition-colors py-2">Contacto</a></li>
+                <li><a href="/contact" className="block text-white hover:text-primary transition-colors py-2">Contacto</a></li>
                 {user ? (
                   <>
                     <li className="border-t border-gray-700 pt-4">
@@ -149,7 +155,7 @@ const Header = ({ transparent = false }) => {
               </ul>
             </nav>
           </div>
-        )}
+        </div>
       </div>
     </header>
   );

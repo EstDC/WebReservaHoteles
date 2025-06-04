@@ -109,6 +109,7 @@ const CitiesCarousel = () => {
               </h2>
             </div>
             </div>
+            {/* Botones desktop */}
             <div className="hidden lg:flex items-center gap-4">
               <button
                 aria-label="slide carousel to previous"
@@ -132,7 +133,6 @@ const CitiesCarousel = () => {
               </a>
             </div>
           </div>
-          
           {/* Carrusel */}
           <div className="lg:w-[55%] w-full overflow-x-auto scrollbar-hide">
             <div
@@ -159,6 +159,29 @@ const CitiesCarousel = () => {
                   <p className="uppercase text-xs text-[#3d2c1e] opacity-70 tracking-widest">{city.country}</p>
                 </a>
               ))}
+            </div>
+            {/* Botones móviles debajo del carrusel */}
+            <div className="flex lg:hidden justify-center gap-4 mt-6">
+              <button
+                aria-label="slide carousel to previous"
+                onClick={() => scroll('left')}
+                className="w-10 h-10 rounded-full border-2 border-[#3d2c1e] flex items-center justify-center text-[#3d2c1e] hover:bg-[#3d2c1e] hover:text-white transition-colors disabled:opacity-50"
+              >
+                <FaChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                aria-label="slide carousel to next"
+                onClick={() => scroll('right')}
+                className="w-10 h-10 rounded-full border-2 border-[#3d2c1e] flex items-center justify-center text-[#3d2c1e] hover:bg-[#3d2c1e] hover:text-white transition-colors"
+              >
+                <FaChevronRight className="w-5 h-5" />
+              </button>
+              <a 
+                href="/hotels" 
+                className="text-[#3d2c1e] hover:text-[#2d2320] transition-colors font-helvetica ml-2 text-sm flex items-center"
+              >
+                *Ver todos
+              </a>
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@ import React from 'react';
 
 const VideoSection = () => {
   return (
-    <section className="relative h-screen overflow-hidden">
+    <section className="relative h-[480px] sm:h-[500px] md:h-[580px] lg:h-[600px] xl:h-[700px] overflow-hidden">
       <div className="absolute inset-0">
         <div className="relative w-full h-full">
           {/* Fallback image */}
@@ -27,7 +27,7 @@ const VideoSection = () => {
       <div className="relative z-10 h-full flex items-center justify-center text-center text-white">
         <div className="container mx-auto px-4">
           <h2 className="text-5xl md:text-7xl font-lorise-sans mb-8 animate-slideInUp font-alcantera-serif">
-            Sumérgete en la <span className="font-lorise-hand text-primary font-bold text-9xl">exclusividad</span><br />de nuevos destinos
+            Sumérgete en la <span className="font-lorise-hand text-primary font-bold text-6xl md:text-8xl lg:text-9xl">exclusividad</span><br />de nuevos destinos
           </h2>
         </div>
       </div>

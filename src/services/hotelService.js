@@ -29,6 +29,12 @@ export const hotelService = {
   deleteHotel: async (id) => {
     const { data } = await api.delete(`/hoteles/${id}`);
     return data;
+  },
+
+  // Obtener todos los hoteles (incluyendo inactivos) para admin
+  getAllHotelsAdmin: async () => {
+    const { data } = await api.get('/hoteles/admin/todos');
+    return data;
   }
 };
 

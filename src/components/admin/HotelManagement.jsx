@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { adminService } from '../../services/adminService';
+import { hotelService } from '../../services/hotelService';
 
 const HotelManagement = () => {
   const { t } = useTranslation();
@@ -19,7 +20,7 @@ const HotelManagement = () => {
       try {
         setLoading(true);
         setError(null);
-        const data = await adminService.getAllHotels();
+        const data = await hotelService.getAllHotelsAdmin();
         setHotels(data || []);
 
         if (data && data.length > 0) {
@@ -47,18 +48,62 @@ const HotelManagement = () => {
     try {
       setLoading(true);
       setError(null);
-      await adminService.updateHotelStatus(hotelId, newStatus);
-      const updatedHotels = hotels.map(hotel => 
-        hotel.id === hotelId ? { ...hotel, activo: newStatus } : hotel
+      // Obtener el hotel completo
+      const hotel = hotels.find(h => h.id === hotelId);
+      if (!hotel) throw new Error('Hotel no encontrado');
+      // Crear el objeto actualizado con todos los campos requeridos
+      console.log('Hotel original:', hotel);
+      console.log('Habitaciones originales:', hotel.habitaciones);
+      
+      const habitacionesActualizadas = Array.isArray(hotel.habitaciones) 
+        ? hotel.habitaciones.map(habitacion => {
+            console.log('Procesando habitación:', habitacion);
+            const habitacionActualizada = {
+              id: habitacion.id,
+              numero: habitacion.numero,
+              tipo: habitacion.tipo,
+              descripcion: habitacion.descripcion,
+              capacidad: habitacion.capacidad,
+              precio_por_noche: habitacion.precioPorNoche,
+              activa: habitacion.activa,
+              hotel_id: hotel.id,
+              extras: habitacion.extras || []
+            };
+            console.log('Habitación actualizada:', habitacionActualizada);
+            return habitacionActualizada;
+          })
+        : [];
+      
+      const updatedHotel = {
+        id: hotel.id,
+        nombre: hotel.nombre || '',
+        direccion: hotel.direccion || '',
+        ciudad: hotel.ciudad || '',
+        pais: hotel.pais || '',
+        estrellas: hotel.estrellas || 0,
+        descripcion: hotel.descripcion || '',
+        activo: !!newStatus,
+        telefono: hotel.telefono || '',
+        email: hotel.email || '',
+        sitioWeb: hotel.sitioWeb || '',
+        latitud: hotel.latitud || 0,
+        longitud: hotel.longitud || 0,
+        habitaciones: habitacionesActualizadas,
+        servicios: Array.isArray(hotel.servicios) ? hotel.servicios : [],
+      };
+      console.log('Enviando hotel actualizado:', JSON.stringify(updatedHotel, null, 2));
+      // Llama al servicio con el objeto completo
+      await adminService.updateHotelStatus(hotelId, updatedHotel);
+      const updatedHotels = hotels.map(h =>
+        h.id === hotelId ? updatedHotel : h
       );
       setHotels(updatedHotels);
-      
       // Actualizar estadísticas
       const stats = {
         totalHotels: updatedHotels.length,
-        activeHotels: updatedHotels.filter(hotel => hotel.activo).length,
-        totalRooms: updatedHotels.reduce((sum, hotel) => sum + (hotel.habitaciones?.length || 0), 0),
-        averageRating: updatedHotels.reduce((sum, hotel) => sum + (hotel.estrellas || 0), 0) / updatedHotels.length
+        activeHotels: updatedHotels.filter(h => h.activo).length,
+        totalRooms: updatedHotels.reduce((sum, h) => sum + (h.habitaciones?.length || 0), 0),
+        averageRating: updatedHotels.reduce((sum, h) => sum + (h.estrellas || 0), 0) / updatedHotels.length
       };
       setStats(stats);
     } catch (err) {

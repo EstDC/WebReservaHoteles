@@ -1,18 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { userService } from '../../services/userService';
+import { adminService } from '../../services/adminService';
 
 const UserManagement = () => {
-  const { t } = useTranslation();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [stats, setStats] = useState({
-    totalUsers: 0,
-    activeUsers: 0,
-    adminUsers: 0,
-    regularUsers: 0
-  });
 
   useEffect(() => {
     loadUsers();
@@ -21,30 +13,9 @@ const UserManagement = () => {
   const loadUsers = async () => {
     try {
       setLoading(true);
-      const data = await userService.getAllUsers();
+      // Cambia 'PUBLICO' por 'CLIENTE' si ese es el rol correcto en tu backend
+      const data = await adminService.getUsersByRole('CLIENTE');
       setUsers(data);
-
-      // Calcular estadísticas
-      const stats = {
-        totalUsers: data.length,
-        activeUsers: data.filter(user => user.activo).length,
-        adminUsers: data.filter(user => user.rol === 'ADMIN').length,
-        regularUsers: data.filter(user => user.rol === 'USER').length
-      };
-
-      setStats(stats);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRoleChange = async (userId, newRole) => {
-    try {
-      setLoading(true);
-      await userService.updateUserRole(userId, newRole);
-      await loadUsers();
     } catch (err) {
       setError(err.message);
     } finally {
@@ -55,7 +26,28 @@ const UserManagement = () => {
   const handleStatusChange = async (userId, newStatus) => {
     try {
       setLoading(true);
-      await userService.updateUserStatus(userId, newStatus);
+      const user = users.find(u => u.id === userId);
+      if (!user) throw new Error('Usuario no encontrado');
+
+      // Asegura todos los campos requeridos
+      const updatedUser = {
+        id: user.id,
+        nombre: user.nombre || '',
+        apellido: user.apellido || '',
+        email: user.email || '',
+        password: user.password || '', // Si no tienes el password real, pon una cadena vacía o la que acepte el backend
+        telefono: user.telefono || '',
+        rol: user.rol || 'PUBLICO', // O 'CLIENTE' si corresponde
+        activo: newStatus,
+        fechaRegistro: user.fechaRegistro || new Date().toISOString(),
+        ultimaModificacion: new Date().toISOString(),
+        tokenRecuperacion: user.tokenRecuperacion || '',
+        tokenExpiracion: user.tokenExpiracion || new Date().toISOString()
+      };
+
+      console.log('Enviando usuario actualizado:', updatedUser);
+
+      await adminService.updateUserStatus(userId, updatedUser);
       await loadUsers();
     } catch (err) {
       setError(err.message);
@@ -66,30 +58,9 @@ const UserManagement = () => {
 
   return (
     <div>
-      {/* Estadísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-700">{t('admin.totalUsers')}</h3>
-          <p className="text-2xl font-bold text-primary">{stats.totalUsers}</p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-700">{t('admin.activeUsers')}</h3>
-          <p className="text-2xl font-bold text-green-600">{stats.activeUsers}</p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-700">{t('admin.adminUsers')}</h3>
-          <p className="text-2xl font-bold text-blue-600">{stats.adminUsers}</p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-700">{t('admin.regularUsers')}</h3>
-          <p className="text-2xl font-bold text-purple-600">{stats.regularUsers}</p>
-        </div>
-      </div>
-
-      {/* Lista de usuarios */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="p-4 border-b">
-          <h2 className="text-xl font-semibold">{t('admin.users')}</h2>
+          <h2 className="text-xl font-semibold">Usuarios</h2>
         </div>
 
         {error && (
@@ -107,64 +78,36 @@ const UserManagement = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('user.id')}
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('user.email')}
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('user.name')}
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('user.role')}
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('user.status')}
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('admin.actions')}
-                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apellido</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acción</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {users.map((user) => (
                   <tr key={user.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      #{user.id}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {user.email}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {user.nombre}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <select
-                        value={user.rol}
-                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                        className="text-sm border-gray-300 rounded-md focus:ring-primary focus:border-primary"
-                      >
-                        <option value="USER">{t('user.role.user')}</option>
-                        <option value="ADMIN">{t('user.role.admin')}</option>
-                      </select>
-                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">#{user.id}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.email}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.nombre}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.apellido}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                         ${user.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                        {user.activo ? t('user.status.active') : t('user.status.inactive')}
+                        {user.activo ? 'Activo' : 'Inactivo'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => handleStatusChange(user.id, !user.activo)}
-                        className={`px-3 py-1 rounded-md text-sm font-medium
-                          ${user.activo 
-                            ? 'bg-red-100 text-red-800 hover:bg-red-200' 
-                            : 'bg-green-100 text-green-800 hover:bg-green-200'}`}
-                      >
-                        {user.activo ? t('admin.deactivate') : t('admin.activate')}
-                      </button>
+                      {!user.activo && (
+                        <button
+                          onClick={() => handleStatusChange(user.id, true)}
+                          className="px-3 py-1 rounded-md text-sm font-medium bg-green-100 text-green-800 hover:bg-green-200"
+                        >
+                          Reactivar
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

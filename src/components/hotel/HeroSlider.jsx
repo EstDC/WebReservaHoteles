@@ -97,29 +97,29 @@ export function SliderRelleno() {
   return (
     <div
       ref={sliderRef}
-      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden mb-8 bg-[#f4a574]"
+      className="relative w-full min-h-[60vh] sm:min-h-[70vh] md:min-h-screen flex items-center justify-center overflow-hidden mb-8 bg-[#f4a574]"
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
     >
-      {/* Container principal: botones izquierda, contenido derecha */}
-      <div className="flex w-full max-w-[1600px] mx-auto h-screen min-h-[32rem] items-center px-8">
+      {/* Container principal */}
+      <div className="flex w-full max-w-[1600px] mx-auto h-[60vh] sm:h-[70vh] md:h-screen min-h-[20rem] sm:min-h-[24rem] md:min-h-[32rem] items-center px-2 sm:px-4 md:px-8">
         {/* Botones/indicadores */}
-        <div className="flex flex-col items-center justify-center w-24 h-full">
-          <div className="flex flex-col space-y-4">
+        <div className="flex flex-col items-center justify-center w-12 sm:w-16 md:w-24 h-full">
+          <div className="flex flex-col space-y-2 sm:space-y-3 md:space-y-4">
             {slides.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => goTo(idx, idx > current ? 1 : -1)}
-                className={`w-5 h-5 flex items-center justify-center rounded-full border-2 border-black transition-colors duration-200 ${idx === current ? 'bg-black border-black ring-2 ring-black' : 'bg-transparent border-black'}`}
+                className={`w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 flex items-center justify-center rounded-full border-2 border-black transition-colors duration-200 ${idx === current ? 'bg-black border-black ring-2 ring-black' : 'bg-transparent border-black'}`}
                 aria-label={`Ir a la diapositiva ${idx + 1}`}
               />
             ))}
           </div>
         </div>
-        {/* Contenido visual (izquierda: img+letras, derecha: img derecha) */}
+        {/* Contenido visual */}
         <div className="flex w-full h-full items-center">
-          {/* Wrapper izquierdo: imagen izquierda + letras alineadas */}
-          <div className="flex flex-col items-end justify-center h-full w-1/3 ml-8 relative overflow-visible">
+          {/* Wrapper izquierdo */}
+          <div className="flex flex-col items-end justify-center h-full w-1/3 ml-2 sm:ml-4 md:ml-8 relative overflow-visible">
             <AnimatePresence mode="wait">
               <motion.div
                 key={leftIndex}
@@ -132,7 +132,7 @@ export function SliderRelleno() {
                 <div className="flex flex-row items-center h-full relative">
                   <div className="flex flex-col items-center justify-center relative">
                     <div
-                      className="bg-gray-300 w-56 h-36 md:w-96 md:h-80 z-10 shadow-lg relative cursor-pointer group"
+                      className="bg-gray-300 w-28 h-20 sm:w-64 sm:h-44 md:w-96 md:h-80 z-10 shadow-lg relative cursor-pointer group"
                       style={{ borderRadius: '0.5rem', overflow: 'hidden' }}
                     >
                       <img src={slides[leftIndex].leftImage} alt="" className="w-full h-full object-cover group-hover:brightness-75 transition duration-300" />
@@ -152,13 +152,13 @@ export function SliderRelleno() {
                       </motion.div>
                     </div>
                   </div>
-                  {/* Letras animadas con delay, centradas verticalmente respecto a la imagen */}
+                  {/* Letras animadas */}
                   <motion.div
                     key={leftIndex}
                     initial={{ opacity: 0, x: -50 }}
                     animate={{
                       opacity: [0, 0, 0.15, 0.25, 0.5, 1],
-                      x: 140,
+                      x: 60,
                       transition: {
                         duration: TEXT_ANIMATION_DURATION,
                         delay: ANIMATION_DURATION * 0.9,
@@ -167,17 +167,17 @@ export function SliderRelleno() {
                       }
                     }}
                     exit={{ opacity: 0, x: 160, transition: { duration: TEXT_ANIMATION_DURATION, ease: [0.8, 0, 0.2, 1] } }}
-                    className="absolute z-10 right-0 bottom-[25%] -translate-y-1/2 w-96 aspect-square flex items-center justify-center"
+                    className="absolute z-10 right-0 bottom-[25%] -translate-y-1/2 w-40 sm:w-72 md:w-96 aspect-square flex items-center justify-center"
                   >
                     <div className="relative">
                       <motion.h2
-                        className="font-lorise-sans text-9xl md:text-8xl leading-tight text-white break-words text-center relative z-10"
+                        className="font-lorise-sans text-4xl sm:text-6xl md:text-8xl leading-tight text-white break-words text-center relative z-10"
                         style={{ letterSpacing: '-0.05em', transform: 'translateX(-20px)' }}
                       >
                         {slides[leftIndex].title.first}
                       </motion.h2>
                       <motion.h2
-                        className="font-alcantera-script text-9xl md:text-9xl leading-tight text-white break-words text-center -mt-8 md:-mt-12 relative z-20 transform translate-x-12 md:translate-x-16">
+                        className="font-alcantera-script text-4xl sm:text-6xl md:text-9xl leading-tight text-white break-words text-center -mt-4 sm:-mt-6 md:-mt-12 relative z-20 transform translate-x-4 sm:translate-x-8 md:translate-x-16">
                         {slides[leftIndex].title.second}
                       </motion.h2>
                     </div>
@@ -186,9 +186,9 @@ export function SliderRelleno() {
               </motion.div>
             </AnimatePresence>
           </div>
-          {/* Wrapper derecho: imagen derecha centrada verticalmente */}
+          {/* Wrapper derecho */}
           <div className="w-2/3 flex items-center justify-end h-full overflow-hidden">
-            <div className="relative w-[90%] max-w-[80%] h-80 md:h-[36rem] rounded-lg overflow-hidden shadow-lg">
+            <div className="relative w-[90%] max-w-[80%] h-32 sm:h-56 md:h-[36rem] rounded-lg overflow-hidden shadow-lg">
               <AnimatePresence mode="wait">
                 <motion.img
                   key={rightIndex}
@@ -209,17 +209,17 @@ export function SliderRelleno() {
       {/* Controles */}
       <button
         onClick={prevSlide}
-        className="absolute left-16 bottom-8 w-12 h-12 rounded-full border-2 border-black flex items-center justify-center text-2xl bg-transparent hover:bg-black hover:text-white transition z-20"
+        className="absolute left-4 sm:left-8 md:left-16 bottom-4 sm:bottom-6 md:bottom-8 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full border-2 border-black flex items-center justify-center text-xl sm:text-xl md:text-2xl bg-transparent hover:bg-black hover:text-white transition z-20"
         aria-label="Anterior"
       >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+        <svg className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
       </button>
       <button
         onClick={nextSlide}
-        className="absolute left-32 bottom-8 w-12 h-12 rounded-full border-2 border-black flex items-center justify-center text-2xl bg-transparent hover:bg-black hover:text-white transition z-20"
+        className="absolute left-16 sm:left-20 md:left-32 bottom-4 sm:bottom-6 md:bottom-8 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full border-2 border-black flex items-center justify-center text-xl sm:text-xl md:text-2xl bg-transparent hover:bg-black hover:text-white transition z-20"
         aria-label="Siguiente"
       >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+        <svg className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
       </button>
     </div>
   );
