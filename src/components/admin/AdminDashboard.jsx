@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import HotelManagement from './HotelManagement';
 import RoomManagement from './RoomManagement';
 import BookingManagement from './BookingManagement';
 import UserManagement from './UserManagement';
 
 const AdminDashboard = () => {
-  const { t } = useTranslation();
   const [activeSection, setActiveSection] = useState('hotels');
 
   const renderContent = () => {
@@ -37,7 +35,7 @@ const AdminDashboard = () => {
                 : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
-            {t('admin.hotels')}
+            Hoteles
           </button>
           <button
             onClick={() => setActiveSection('rooms')}
@@ -47,7 +45,7 @@ const AdminDashboard = () => {
                 : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
-            {t('admin.rooms')}
+            Habitaciones
           </button>
           <button
             onClick={() => setActiveSection('bookings')}
@@ -57,7 +55,7 @@ const AdminDashboard = () => {
                 : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
-            {t('admin.bookings')}
+            Reservas
           </button>
           <button
             onClick={() => setActiveSection('users')}
@@ -67,7 +65,7 @@ const AdminDashboard = () => {
                 : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
-            {t('admin.users')}
+            Usuarios
           </button>
         </nav>
       </div>

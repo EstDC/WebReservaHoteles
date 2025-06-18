@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { adminService } from '../../services/adminService';
 import { hotelService } from '../../services/hotelService';
 
 const HotelManagement = () => {
-  const { t } = useTranslation();
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -48,30 +46,21 @@ const HotelManagement = () => {
     try {
       setLoading(true);
       setError(null);
-      // Obtener el hotel completo
       const hotel = hotels.find(h => h.id === hotelId);
       if (!hotel) throw new Error('Hotel no encontrado');
-      // Crear el objeto actualizado con todos los campos requeridos
-      console.log('Hotel original:', hotel);
-      console.log('Habitaciones originales:', hotel.habitaciones);
       
       const habitacionesActualizadas = Array.isArray(hotel.habitaciones) 
-        ? hotel.habitaciones.map(habitacion => {
-            console.log('Procesando habitación:', habitacion);
-            const habitacionActualizada = {
-              id: habitacion.id,
-              numero: habitacion.numero,
-              tipo: habitacion.tipo,
-              descripcion: habitacion.descripcion,
-              capacidad: habitacion.capacidad,
-              precio_por_noche: habitacion.precioPorNoche,
-              activa: habitacion.activa,
-              hotel_id: hotel.id,
-              extras: habitacion.extras || []
-            };
-            console.log('Habitación actualizada:', habitacionActualizada);
-            return habitacionActualizada;
-          })
+        ? hotel.habitaciones.map(habitacion => ({
+            id: habitacion.id,
+            numero: habitacion.numero,
+            tipo: habitacion.tipo,
+            descripcion: habitacion.descripcion,
+            capacidad: habitacion.capacidad,
+            precio_por_noche: habitacion.precioPorNoche,
+            activa: habitacion.activa,
+            hotel_id: hotel.id,
+            extras: habitacion.extras || []
+          }))
         : [];
       
       const updatedHotel = {
@@ -91,14 +80,13 @@ const HotelManagement = () => {
         habitaciones: habitacionesActualizadas,
         servicios: Array.isArray(hotel.servicios) ? hotel.servicios : [],
       };
-      console.log('Enviando hotel actualizado:', JSON.stringify(updatedHotel, null, 2));
-      // Llama al servicio con el objeto completo
+
       await adminService.updateHotelStatus(hotelId, updatedHotel);
       const updatedHotels = hotels.map(h =>
         h.id === hotelId ? updatedHotel : h
       );
       setHotels(updatedHotels);
-      // Actualizar estadísticas
+      
       const stats = {
         totalHotels: updatedHotels.length,
         activeHotels: updatedHotels.filter(h => h.activo).length,
@@ -127,19 +115,19 @@ const HotelManagement = () => {
       {/* Estadísticas */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-700">{t('admin.totalHotels')}</h3>
+          <h3 className="text-lg font-semibold text-gray-700">Total de Hoteles</h3>
           <p className="text-2xl font-bold text-primary">{stats.totalHotels}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-700">{t('admin.activeHotels')}</h3>
+          <h3 className="text-lg font-semibold text-gray-700">Hoteles Activos</h3>
           <p className="text-2xl font-bold text-green-600">{stats.activeHotels}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-700">{t('admin.totalRooms')}</h3>
+          <h3 className="text-lg font-semibold text-gray-700">Total de Habitaciones</h3>
           <p className="text-2xl font-bold text-blue-600">{stats.totalRooms}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-700">{t('admin.averageRating')}</h3>
+          <h3 className="text-lg font-semibold text-gray-700">Valoración Media</h3>
           <p className="text-2xl font-bold text-yellow-600">{stats.averageRating.toFixed(1)}</p>
         </div>
       </div>
@@ -147,7 +135,7 @@ const HotelManagement = () => {
       {/* Lista de hoteles */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="p-4 border-b">
-          <h2 className="text-xl font-semibold">{t('admin.hotels')}</h2>
+          <h2 className="text-xl font-semibold">Hoteles</h2>
         </div>
 
         {error && (
@@ -161,25 +149,25 @@ const HotelManagement = () => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('hotel.id')}
+                  ID
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('hotel.name')}
+                  Nombre
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('hotel.location')}
+                  Ubicación
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('hotel.rooms')}
+                  Habitaciones
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('hotel.rating')}
+                  Estrellas
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('hotel.status')}
+                  Estado
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('admin.actions')}
+                  Acciones
                 </th>
               </tr>
             </thead>
@@ -204,7 +192,7 @@ const HotelManagement = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                       ${hotel.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {hotel.activo ? t('hotel.status.active') : t('hotel.status.inactive')}
+                      {hotel.activo ? 'Activo' : 'Inactivo'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -217,7 +205,7 @@ const HotelManagement = () => {
                           : 'bg-green-100 text-green-800 hover:bg-green-200'}
                         ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
-                      {hotel.activo ? t('admin.deactivate') : t('admin.activate')}
+                      {hotel.activo ? 'Desactivar' : 'Activar'}
                     </button>
                   </td>
                 </tr>

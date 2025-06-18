@@ -10,10 +10,10 @@ const UserManagement = () => {
     loadUsers();
   }, []);
 
+  // Carga los usuarios con rol CLIENTE
   const loadUsers = async () => {
     try {
       setLoading(true);
-      // Cambia 'PUBLICO' por 'CLIENTE' si ese es el rol correcto en tu backend
       const data = await adminService.getUsersByRole('CLIENTE');
       setUsers(data);
     } catch (err) {
@@ -23,29 +23,28 @@ const UserManagement = () => {
     }
   };
 
+  // Actualiza el estado de un usuario (activo/inactivo)
   const handleStatusChange = async (userId, newStatus) => {
     try {
       setLoading(true);
       const user = users.find(u => u.id === userId);
       if (!user) throw new Error('Usuario no encontrado');
 
-      // Asegura todos los campos requeridos
+      // Crear objeto actualizado con todos los campos requeridos
       const updatedUser = {
         id: user.id,
         nombre: user.nombre || '',
         apellido: user.apellido || '',
         email: user.email || '',
-        password: user.password || '', // Si no tienes el password real, pon una cadena vacía o la que acepte el backend
+        password: user.password || '', // Mantener la contraseña existente
         telefono: user.telefono || '',
-        rol: user.rol || 'PUBLICO', // O 'CLIENTE' si corresponde
+        rol: user.rol || 'PUBLICO',
         activo: newStatus,
         fechaRegistro: user.fechaRegistro || new Date().toISOString(),
         ultimaModificacion: new Date().toISOString(),
         tokenRecuperacion: user.tokenRecuperacion || '',
         tokenExpiracion: user.tokenExpiracion || new Date().toISOString()
       };
-
-      console.log('Enviando usuario actualizado:', updatedUser);
 
       await adminService.updateUserStatus(userId, updatedUser);
       await loadUsers();
@@ -58,6 +57,7 @@ const UserManagement = () => {
 
   return (
     <div>
+      {/* Tabla de usuarios */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="p-4 border-b">
           <h2 className="text-xl font-semibold">Usuarios</h2>

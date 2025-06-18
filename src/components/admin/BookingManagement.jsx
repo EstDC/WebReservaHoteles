@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { bookingService } from '../../services/bookingService';
 
 const BookingManagement = () => {
-  const { t } = useTranslation();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -19,6 +17,7 @@ const BookingManagement = () => {
     loadBookings();
   }, []);
 
+  // Carga todas las reservas y calcula las estadísticas
   const loadBookings = async () => {
     try {
       setLoading(true);
@@ -50,6 +49,7 @@ const BookingManagement = () => {
     }
   };
 
+  // Actualiza el estado de una reserva
   const handleStatusChange = async (bookingId, newStatus) => {
     try {
       setLoading(true);
@@ -62,6 +62,7 @@ const BookingManagement = () => {
     }
   };
 
+  // Formatea la fecha en formato español
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('es-ES', {
       year: 'numeric',
@@ -72,28 +73,28 @@ const BookingManagement = () => {
 
   return (
     <div>
-      {/* Estadísticas */}
+      {/* Panel de estadísticas */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-700">{t('admin.totalBookings')}</h3>
+          <h3 className="text-lg font-semibold text-gray-700">Total de Reservas</h3>
           <p className="text-2xl font-bold text-primary">{stats.totalBookings}</p>
-          <p className="text-sm text-gray-500 mt-1">{t('admin.totalRevenue')}: {stats.totalRevenue}€</p>
+          <p className="text-sm text-gray-500 mt-1">Ingresos totales: {stats.totalRevenue}€</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-700">{t('admin.activeBookings')}</h3>
+          <h3 className="text-lg font-semibold text-gray-700">Reservas Activas</h3>
           <p className="text-2xl font-bold text-green-600">{stats.activeBookings}</p>
-          <p className="text-sm text-gray-500 mt-1">{t('admin.completedBookings')}: {stats.completedBookings}</p>
+          <p className="text-sm text-gray-500 mt-1">Reservas completadas: {stats.completedBookings}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-700">{t('admin.cancelledBookings')}</h3>
+          <h3 className="text-lg font-semibold text-gray-700">Reservas Canceladas</h3>
           <p className="text-2xl font-bold text-red-600">{stats.cancelledBookings}</p>
         </div>
       </div>
 
-      {/* Lista de reservas */}
+      {/* Tabla de reservas */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="p-4 border-b">
-          <h2 className="text-xl font-semibold">{t('admin.bookings')}</h2>
+          <h2 className="text-xl font-semibold">Reservas</h2>
         </div>
 
         {error && (
@@ -112,28 +113,28 @@ const BookingManagement = () => {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('booking.id')}
+                    ID
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('booking.user')}
+                    Usuario
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('booking.hotel')}
+                    Hotel
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('booking.checkIn')}
+                    Entrada
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('booking.checkOut')}
+                    Salida
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('booking.status')}
+                    Estado
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('booking.total')}
+                    Total
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('admin.actions')}
+                    Acciones
                   </th>
                 </tr>
               </thead>
@@ -160,7 +161,9 @@ const BookingManagement = () => {
                         ${booking.estado === 'CONFIRMED' ? 'bg-green-100 text-green-800' : 
                           booking.estado === 'CANCELLED' ? 'bg-red-100 text-red-800' : 
                           'bg-yellow-100 text-yellow-800'}`}>
-                        {booking.estado}
+                        {booking.estado === 'CONFIRMED' ? 'Confirmada' : 
+                         booking.estado === 'CANCELLED' ? 'Cancelada' : 
+                         'Pendiente'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -172,9 +175,9 @@ const BookingManagement = () => {
                         onChange={(e) => handleStatusChange(booking.id, e.target.value)}
                         className="text-sm border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                       >
-                        <option value="PENDING">{t('booking.status.pending')}</option>
-                        <option value="CONFIRMED">{t('booking.status.confirmed')}</option>
-                        <option value="CANCELLED">{t('booking.status.cancelled')}</option>
+                        <option value="PENDING">Pendiente</option>
+                        <option value="CONFIRMED">Confirmada</option>
+                        <option value="CANCELLED">Cancelada</option>
                       </select>
                     </td>
                   </tr>

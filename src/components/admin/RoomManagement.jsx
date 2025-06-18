@@ -238,20 +238,20 @@ const RoomManagement = () => {
 
   return (
     <div>
-      {/* Estadísticas */}
+      {/* Panel de estadísticas */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-700">{t('admin.totalRooms')}</h3>
+          <h3 className="text-lg font-semibold text-gray-700">Total de Habitaciones</h3>
           <p className="text-2xl font-bold text-primary">{stats.totalRooms}</p>
-          <p className="text-sm text-gray-500 mt-1">{t('admin.totalCapacity')}: {stats.totalCapacity}</p>
+          <p className="text-sm text-gray-500 mt-1">Capacidad total: {stats.totalCapacity}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-700">{t('admin.availableRooms')}</h3>
+          <h3 className="text-lg font-semibold text-gray-700">Habitaciones Disponibles</h3>
           <p className="text-2xl font-bold text-green-600">{stats.availableRooms}</p>
-          <p className="text-sm text-gray-500 mt-1">{t('admin.totalValue')}: {stats.totalValue}€</p>
+          <p className="text-sm text-gray-500 mt-1">Valor total: {stats.totalValue}€</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-700">{t('admin.roomTypes')}</h3>
+          <h3 className="text-lg font-semibold text-gray-700">Tipos de Habitación</h3>
           <div className="mt-2 space-y-2">
             {Object.entries(stats.roomTypes).map(([type, count]) => (
               <div key={type} className="border-b border-gray-100 pb-2 last:border-0">
@@ -260,9 +260,9 @@ const RoomManagement = () => {
                   <span>{count}</span>
                 </div>
                 <div className="flex justify-between text-xs text-gray-500 mt-1">
-                  <span>{t('admin.avgPrice')}: {stats.averagePrices[type]}€</span>
+                  <span>Precio medio: {stats.averagePrices[type]}€</span>
                   <span>
-                    {t('admin.occupancy')}: {stats.occupancyByType[type].available}/{stats.occupancyByType[type].total}
+                    Disponibles: {stats.occupancyByType[type].available}/{stats.occupancyByType[type].total}
                   </span>
                 </div>
               </div>
@@ -273,12 +273,12 @@ const RoomManagement = () => {
 
       {/* Lista de habitaciones */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">{t('admin.rooms')}</h2>
+        <h2 className="text-2xl font-semibold">Habitaciones</h2>
         <button
           onClick={() => handleOpenModal()}
           className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90"
         >
-          {t('admin.addRoom')}
+          Añadir Habitación
         </button>
       </div>
 
@@ -311,7 +311,7 @@ const RoomManagement = () => {
                       ? 'bg-green-100 text-green-800' 
                       : 'bg-red-100 text-red-800'
                   }`}>
-                    {room.disponible ? t('room.available') : t('room.unavailable')}
+                    {room.disponible ? 'Disponible' : 'No disponible'}
                   </div>
                 </div>
                 <div className="p-6 flex flex-col flex-1">
@@ -325,7 +325,7 @@ const RoomManagement = () => {
                   
                   {room.fechasOcupadas && room.fechasOcupadas.length > 0 && (
                     <div className="mb-4">
-                      <p className="text-sm text-gray-500 mb-1">{t('room.occupiedDates')}:</p>
+                      <p className="text-sm text-gray-500 mb-1">Fechas ocupadas:</p>
                       <div className="text-sm text-gray-600">
                         {room.fechasOcupadas.map((fecha, index) => (
                           <div key={index} className="flex items-center">
@@ -342,13 +342,13 @@ const RoomManagement = () => {
                       onClick={() => handleOpenModal(room)}
                       className="bg-primary text-white py-2 px-4 rounded hover:bg-primary/90 transition"
                     >
-                      {t('admin.edit')}
+                      Editar
                     </button>
                     <button
                       onClick={() => handleDelete(room.id)}
                       className="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition"
                     >
-                      {t('admin.delete')}
+                      Eliminar
                     </button>
                   </div>
                 </div>
@@ -358,17 +358,17 @@ const RoomManagement = () => {
         </div>
       )}
 
-      {/* Modal */}
+      {/* Modal de edición/creación */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <h3 className="text-xl font-semibold mb-4">
-              {selectedRoom ? t('admin.editRoom') : t('admin.addRoom')}
+              {selectedRoom ? 'Editar Habitación' : 'Añadir Habitación'}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="hotelId" className="block text-sm font-medium text-gray-700">
-                  {t('room.hotel')}
+                  Hotel
                 </label>
                 <select
                   id="hotelId"
@@ -378,7 +378,7 @@ const RoomManagement = () => {
                   required
                   className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md"
                 >
-                  <option value="">{t('common.selectHotel')}</option>
+                  <option value="">Seleccionar Hotel</option>
                   {hotels.map(hotel => (
                     <option key={hotel.id} value={hotel.id}>
                       {hotel.nombre}
@@ -389,7 +389,7 @@ const RoomManagement = () => {
 
               <div>
                 <label htmlFor="tipo" className="block text-sm font-medium text-gray-700">
-                  {t('room.type')}
+                  Tipo
                 </label>
                 <input
                   type="text"
@@ -404,7 +404,7 @@ const RoomManagement = () => {
 
               <div>
                 <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700">
-                  {t('room.description')}
+                  Descripción
                 </label>
                 <textarea
                   id="descripcion"
@@ -420,7 +420,7 @@ const RoomManagement = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="capacidad" className="block text-sm font-medium text-gray-700">
-                    {t('room.capacity')}
+                    Capacidad
                   </label>
                   <input
                     type="number"
@@ -435,7 +435,7 @@ const RoomManagement = () => {
 
                 <div>
                   <label htmlFor="precioPorNoche" className="block text-sm font-medium text-gray-700">
-                    {t('room.price')}
+                    Precio por Noche
                   </label>
                   <input
                     type="number"
@@ -452,7 +452,7 @@ const RoomManagement = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="vista" className="block text-sm font-medium text-gray-700">
-                    {t('room.view')}
+                    Vista
                   </label>
                   <input
                     type="text"
@@ -466,7 +466,7 @@ const RoomManagement = () => {
 
                 <div>
                   <label htmlFor="tipoCama" className="block text-sm font-medium text-gray-700">
-                    {t('room.bedType')}
+                    Tipo de Cama
                   </label>
                   <input
                     type="text"
@@ -481,7 +481,7 @@ const RoomManagement = () => {
 
               <div>
                 <label htmlFor="metrosCuadrados" className="block text-sm font-medium text-gray-700">
-                  {t('room.size')}
+                  Metros Cuadrados
                 </label>
                 <input
                   type="number"
@@ -499,13 +499,13 @@ const RoomManagement = () => {
                   onClick={handleCloseModal}
                   className="px-4 py-2 text-gray-600 hover:text-gray-800"
                 >
-                  {t('common.cancel')}
+                  Cancelar
                 </button>
                 <button
                   type="submit"
                   className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
                 >
-                  {selectedRoom ? t('common.save') : t('common.create')}
+                  {selectedRoom ? 'Guardar' : 'Crear'}
                 </button>
               </div>
             </form>
